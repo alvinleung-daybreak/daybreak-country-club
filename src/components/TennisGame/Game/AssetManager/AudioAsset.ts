@@ -2,11 +2,15 @@ import { Asset } from "./AssetManager";
 
 export class AudioAsset implements Asset {
   private _isloaded = false;
+  private _isLoading = false;
   private src: string;
   private audio = new Audio();
 
   constructor(src: string) {
     this.src = src;
+  }
+  isLoading(): boolean {
+    return this._isLoading;
   }
   public getAudio() {
     return this.audio;
@@ -39,9 +43,12 @@ export class AudioAsset implements Asset {
   public load(): Promise<Asset> {
     // start loading
     return new Promise((resolve, reject) => {
+      this._isLoading = true;
+
       // if we have to pull from the server
       this.audio.ondurationchange = () => {
         this._isloaded = true;
+        this._isLoading = false;
         resolve(this);
       };
       this.audio.src = this.src;
@@ -53,6 +60,7 @@ export class AudioAsset implements Asset {
           `Audio ${this.src} is loaded already, using the browser cached version`
         );
         this._isloaded = true;
+        this._isLoading = false;
         resolve(this);
         return;
       }

@@ -12,6 +12,12 @@ export class AssetManager {
   }
 
   add(assetId: string, asset: Asset) {
+    if (this.assetLookup[assetId]) {
+      console.log(
+        `Asset with id "${assetId}" already exist in system, abort adding.`
+      );
+      return;
+    }
     this.assetLookup[assetId] = asset;
   }
   get<T extends Asset>(assetId: string): T {
@@ -28,11 +34,20 @@ export class AssetManager {
     return result;
   }
   async loadAll() {
-    console.log("loading all assets...");
+    console.log("loading assets...");
 
-    const allLoaders = Object.values(this.assetLookup).map((asset) =>
-      asset.load()
+    const allAssets = Object.values(this.assetLookup);
+    const filteredLoookup = allAssets.filter(
+      (asset) => !asset.isLoaded() && !asset.isLoading()
     );
+
+    console.log(
+      `Loading ${filteredLoookup.length} assets, ${
+        allAssets.length - filteredLoookup.length
+      } is already initiated or finished loading`
+    );
+
+    const allLoaders = filteredLoookup.map((asset) => asset.load());
     await Promise.all(allLoaders);
 
     console.log("Completed loading all assets");
@@ -43,4 +58,5 @@ export class AssetManager {
 export interface Asset {
   load(): Promise<Asset>;
   isLoaded(): boolean;
+  isLoading(): boolean;
 }
