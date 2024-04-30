@@ -6,6 +6,7 @@ import PurchaseButton from "./PurchaseButton";
 import { AssetManager } from "../TennisGame/Game/AssetManager/AssetManager";
 import { AudioAsset } from "../TennisGame/Game/AssetManager/AudioAsset";
 import { SoundEffect } from "../TennisGame/Game/SoundEffect";
+import { useTennisHitSound } from "@/hooks/useTennisHitSound";
 
 type Props = {};
 
@@ -19,7 +20,7 @@ const sizes = [
 const ProductInfoPanel = (props: Props) => {
   const [size, setSize] = useState(sizes[0].name);
 
-  const hitSoundEffect = useRef<SoundEffect>();
+  const hitSoundEffect = useTennisHitSound();
 
   const handlePurchaseSubmit = () => {
     console.log("checkout");
@@ -28,32 +29,6 @@ const ProductInfoPanel = (props: Props) => {
   const handleSelectorClicked = () => {
     hitSoundEffect.current?.trigger();
   };
-
-  useEffect(() => {
-    const loadAssets = async () => {
-      const assets = AssetManager.getInstance();
-
-      assets.add(
-        "tennis-hit-1",
-        new AudioAsset("./audio-assets/tennis-hit-1.mp3")
-      );
-      assets.add(
-        "tennis-hit-2",
-        new AudioAsset("./audio-assets/tennis-hit-2.mp3")
-      );
-      assets.add(
-        "tennis-hit-3",
-        new AudioAsset("./audio-assets/tennis-hit-4.mp3")
-      );
-      await assets.loadAll();
-      hitSoundEffect.current = new SoundEffect([
-        assets.get("tennis-hit-1"),
-        assets.get("tennis-hit-2"),
-        assets.get("tennis-hit-3"),
-      ]);
-    };
-    loadAssets();
-  }, []);
 
   return (
     <div className="flex flex-col items-center text-center mx-8 font-sans-sm max-w-[42ch]">

@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import { CountryClubLogo } from "./CountryClubLogo";
 import { motion } from "framer-motion";
+import { useTennisHitSound } from "@/hooks/useTennisHitSound";
 
 type Props = {};
 
 const CountryClubNav = (props: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const hitSoundEffect = useTennisHitSound();
 
   return (
     <>
@@ -15,12 +17,14 @@ const CountryClubNav = (props: Props) => {
       <nav className="fixed top-0 left-0 right-0 mx-4 md:mx-12 h-16 border-l border-r border-b flex flex-row items-center justify-center z-10 bg-forest-green">
         <CountryClubLogo />
         <div className="absolute right-0 px-4">
-          <button
+          <motion.button
             className="font-cond-sm"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onTap={() => {
+              setIsExpanded(!isExpanded);
+            }}
           >
             {isExpanded ? "Close" : "Menu"}
-          </button>
+          </motion.button>
         </div>
         <motion.div
           initial={{
