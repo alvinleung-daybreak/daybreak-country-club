@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import SizeSelector from "./SizeSelector";
 import PurchaseButton from "./PurchaseButton";
 import { AssetManager } from "../TennisGame/Game/AssetManager/AssetManager";
@@ -13,12 +13,16 @@ type Props = {};
 const sizes = [
   { name: "s", isAvailable: true },
   { name: "m", isAvailable: true },
-  { name: "l", isAvailable: true },
+  { name: "l", isAvailable: false },
   { name: "xl", isAvailable: true },
 ];
 
 const ProductInfoPanel = (props: Props) => {
   const [size, setSize] = useState(sizes[0].name);
+  const isItemAvailable = useMemo(
+    () => sizes.find(({ name }) => name === size)?.isAvailable || false,
+    [size]
+  );
 
   const hitSoundEffect = useTennisHitSound();
 
@@ -55,7 +59,10 @@ const ProductInfoPanel = (props: Props) => {
           onClick={handleSelectorClicked}
           currentSize={size}
         />
-        <PurchaseButton isSoldOut={false} onSubmit={handlePurchaseSubmit} />
+        <PurchaseButton
+          isSoldOut={!isItemAvailable}
+          onSubmit={handlePurchaseSubmit}
+        />
       </div>
     </div>
   );
