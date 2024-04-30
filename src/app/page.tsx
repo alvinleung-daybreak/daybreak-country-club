@@ -36,7 +36,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="mx-4 md:mx-12 border-l border-r flex flex-col items-center text-center border-t py-28">
-        <div className="mb-8">
+        <div className="mb-8 px-4">
           <SassyDaybreakLogo />
         </div>
         <div className="mb-8">
@@ -65,6 +65,7 @@ export default function Home() {
 
 const SassyDaybreakLogo = () => (
   <svg
+    className="max-w-full"
     width="393"
     height="87"
     viewBox="0 0 393 87"

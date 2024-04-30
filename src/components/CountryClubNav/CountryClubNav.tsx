@@ -3,13 +3,11 @@
 import React, { useState } from "react";
 import { CountryClubLogo } from "./CountryClubLogo";
 import { motion } from "framer-motion";
-import { useTennisHitSound } from "@/hooks/useTennisHitSound";
 
 type Props = {};
 
 const CountryClubNav = (props: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const hitSoundEffect = useTennisHitSound();
 
   return (
     <>
