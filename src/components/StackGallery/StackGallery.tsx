@@ -4,6 +4,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ImageInfo } from "../ProductGallery/ProductGallery";
 import {
+  clamp,
   motion,
   useDragControls,
   useInView,
@@ -19,7 +20,7 @@ import {
   usePointerPosition,
 } from "@/hooks/usePointerInfo";
 import { useInactiveMotionValue } from "@/hooks/useInactiveMotionValue";
-import { useEventListener } from "usehooks-ts";
+import { useDebounceCallback, useEventListener } from "usehooks-ts";
 import { useWindowDimension } from "@/hooks/useWindowDimension";
 
 type Props = {
@@ -35,8 +36,10 @@ const StackGallery = ({ images }: Props) => {
   };
 
   return (
-    <div className="overflow-hidden mt-12 py-8 w-full flex justify-center">
-      <div className="relative ">
+    <div className="relative overflow-hidden mt-12 py-8 w-full max-w-[50rem] flex justify-center overflow-x-hidden">
+      <div className="w-[20%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-40 left-0 top-0 bottom-0" />
+      <div className="w-[20%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-40 right-0 top-0 bottom-0" />
+      <div className="relative">
         {images.map((img, index) => {
           return (
             <StackGallerySlide
@@ -74,33 +77,47 @@ const StackGallerySlide = ({
 
   const inView = useInView(containerRef);
   const [isDragging, setIsDragging] = useState(false);
+
+  const wheelOffset = useMotionValue(0);
+
+  const DRAG_COMMIT_DIST = 200;
+  const isOverDragThreshold = useRef(false);
+  const FLICK_THRESHOLD = 100;
   const hasFlickDetected = useRef(false);
 
   const pointer = usePointerPosition(inView);
   const pointerOffsetX = useMotionValue(0);
-  const FLICK_THRESHOLD = 20;
 
   const isSlidePastCurrent = currentSlide > index;
 
-  const x = useTransform(pointer.x, (latest) => {
-    if (isSlidePastCurrent) {
-      return 300 * exitDirection.current;
-    }
+  const x = useTransform(
+    [pointer.x, wheelOffset],
+    ([pointerXLatest, wheelOffsetLatest]: any) => {
+      if (isSlidePastCurrent) {
+        return DRAG_COMMIT_DIST * 3 * exitDirection.current;
+      }
 
-    if (isDragging) {
-      return latest + pointerOffsetX.get() - bounds.x;
-    }
-    return 0;
-  });
+      if (wheelOffset.get() !== 0) {
+        return wheelOffsetLatest;
+      }
 
-  useMotionValueEvent(x, "change", (latest) => {
-    if (Math.abs(x.getVelocity()) > FLICK_THRESHOLD) {
+      if (isDragging) {
+        return pointerXLatest + pointerOffsetX.get() - bounds.x;
+      }
+      return 0;
+    }
+  );
+
+  useMotionValueEvent(pointer.x, "change", (latest) => {
+    if (Math.abs(pointer.x.getVelocity()) > FLICK_THRESHOLD) {
       hasFlickDetected.current = true;
+      return;
     }
+    hasFlickDetected.current = false;
   });
 
   const rotationOffset = random * 10 - 5;
-  const rotate = useInactiveMotionValue(
+  const rotateZ = useInactiveMotionValue(
     useTransform(
       x,
       [-windowDim.width / 2, 0, windowDim.width / 2],
@@ -115,8 +132,13 @@ const StackGallerySlide = ({
     const offset = bounds.left - e.clientX;
     pointerOffsetX.set(offset);
     hasFlickDetected.current = false;
+    isOverDragThreshold.current = false;
   };
+
   useEventListener("pointerup", () => {
+    if (Math.abs(x.get()) > DRAG_COMMIT_DIST) {
+      isOverDragThreshold.current = true;
+    }
     setIsDragging(false);
   });
 
@@ -126,29 +148,48 @@ const StackGallerySlide = ({
   };
 
   useEffect(() => {
-    if (!isDragging && hasFlickDetected.current) handleNextSlide();
+    if (
+      !isDragging &&
+      (hasFlickDetected.current || isOverDragThreshold.current)
+    ) {
+      handleNextSlide();
+    }
   }, [isDragging]);
+
+  const resetOffset = useDebounceCallback(() => {
+    wheelOffset.set(0);
+  }, 500);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    // e.preventDefault();
+    // const newOffsetX = wheelOffset.get() + e.deltaX;
+    // wheelOffset.set(newOffsetX);
+    // resetOffset();
+  };
 
   return (
     <motion.div
       ref={containerRef}
       onPointerDown={handlePointerDown}
       onClick={() => {
-        if (Math.abs(x.get()) > 5) return;
-        handleNextSlide();
+        // if (Math.abs(x.get()) > 5) return;
+        // handleNextSlide();
       }}
-      animate={{
-        opacity: isSlidePastCurrent ? 0 : 1,
-      }}
+      onWheel={handleWheel}
+      animate={
+        {
+          // opacity: isSlidePastCurrent ? 0 : 1,
+        }
+      }
       style={{
         position: index === 0 ? "relative" : "absolute",
         pointerEvents: isSlidePastCurrent ? "none" : "all",
         x,
-        opacity: isSlidePastCurrent ? 0 : 1,
-        rotate,
+        // opacity: isSlidePastCurrent ? 0 : 1,
+        rotateZ,
         scale: isDragging ? 1.05 : 1,
         transition: "transform .7s cubic-bezier(0.16, 1, 0.3, 1)",
-        zIndex: 100 - index,
+        zIndex: 30 - index,
       }}
       className="top-0 left-0 max-w-96 border-8 border-white  cursor-grab drop-shadow-lg"
     >
