@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { WindowDimensionContextProvider } from "@/hooks/useWindowDimension";
+import PointerContextProvider from "@/components/PointerContextProvider/PointerContextProvider";
 
 const fractul_regular = localFont({
   src: "../../public/typography/fractul-regular.woff2",
@@ -44,7 +45,7 @@ export default function RootLayout({
         `}
       >
         <WindowDimensionContextProvider>
-          {children}
+          <PointerContextProvider>{children}</PointerContextProvider>
         </WindowDimensionContextProvider>
       </body>
     </html>

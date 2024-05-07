@@ -13,7 +13,6 @@ import {
 } from "react";
 import { useFollowMotionValue } from "./useFollowMotionValue";
 import { useWindowDimension } from "./useWindowDimension";
-import { useEffectDebugger } from "./useEffectDebugger";
 
 type Scrub = [
   MutableRefObject<HTMLDivElement>,
@@ -72,7 +71,7 @@ export function useScrub({
     [target]
   );
 
-  useEffectDebugger(() => {
+  useEffect(() => {
     const elm = containerRef.current;
     let isDragging = false;
     let prevVal = 0;
