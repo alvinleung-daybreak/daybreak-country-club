@@ -74,7 +74,7 @@ export default function Home() {
             <h2 className="font-country-script-display mb-12">
               Country club photoshoot & ephemera
             </h2>
-            <div className="flex flex-row max-w-[90ch] text-justify gap-4">
+            <div className="flex flex-row max-w-[70ch] text-justify gap-4">
               <p className="font-sans-sm">
                 As the project unfolded over time and expanded beyond the
                 initial commemorative sweatshirt, we ended up art directing a
@@ -94,7 +94,7 @@ export default function Home() {
             <h2 className="font-country-script-display mb-12">
               The making of our backdrop
             </h2>
-            <div className="flex flex-row max-w-[90ch] text-justify gap-4">
+            <div className="flex flex-row max-w-[70ch] text-justify gap-4">
               <p className="font-sans-sm">
                 Setting the scene for our photoshoot, our backdrop was the
                 result of thorough historical research and AI image-making with

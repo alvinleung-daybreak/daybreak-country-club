@@ -12,7 +12,7 @@ const CountryClubNav = (props: Props) => {
   return (
     <>
       <div className="h-16 border-l border-r mx-12"></div>
-      <nav className="fixed top-0 left-0 right-0 mx-4 md:mx-12 h-16 border-l border-r border-b flex flex-row items-center justify-center z-10 bg-forest-green">
+      <nav className="fixed top-0 left-0 right-0 mx-4 md:mx-12 h-16 border-l border-r border-b flex flex-row items-center justify-center z-50 bg-forest-green">
         <CountryClubLogo />
         <div className="absolute right-0 px-4">
           <motion.button

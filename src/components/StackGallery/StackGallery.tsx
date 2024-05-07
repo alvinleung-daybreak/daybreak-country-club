@@ -36,9 +36,9 @@ const StackGallery = ({ images }: Props) => {
   };
 
   return (
-    <div className="relative overflow-hidden mt-12 py-8 w-full max-w-[50rem] flex justify-center overflow-x-hidden">
-      <div className="w-[20%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-40 left-0 top-0 bottom-0" />
-      <div className="w-[20%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-40 right-0 top-0 bottom-0" />
+    <div className="relative overflow-hidden mt-12 pt-12 pb-20 w-full max-w-[48rem] flex justify-center overflow-x-hidden">
+      <div className="w-[10%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-40 left-0 top-0 bottom-0" />
+      <div className="w-[10%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-40 right-0 top-0 bottom-0" />
       <div className="relative">
         {images.map((img, index) => {
           return (
@@ -116,7 +116,7 @@ const StackGallerySlide = ({
     hasFlickDetected.current = false;
   });
 
-  const rotationOffset = random * 10 - 5;
+  const rotationOffset = random * 20 - 10;
   const rotateZ = useInactiveMotionValue(
     useTransform(
       x,
@@ -176,11 +176,12 @@ const StackGallerySlide = ({
         // handleNextSlide();
       }}
       onWheel={handleWheel}
-      animate={
-        {
-          // opacity: isSlidePastCurrent ? 0 : 1,
-        }
-      }
+      animate={{
+        // opacity: isSlidePastCurrent ? 0 : 1,
+        boxShadow: `0px ${isDragging ? "15" : "5"}px ${
+          isDragging ? "20" : "10"
+        }px rgba(164, 160, 160, 0.2)`,
+      }}
       style={{
         position: index === 0 ? "relative" : "absolute",
         pointerEvents: isSlidePastCurrent ? "none" : "all",
@@ -188,10 +189,10 @@ const StackGallerySlide = ({
         // opacity: isSlidePastCurrent ? 0 : 1,
         rotateZ,
         scale: isDragging ? 1.05 : 1,
-        transition: "transform .7s cubic-bezier(0.16, 1, 0.3, 1)",
+        transition: "transform .6s cubic-bezier(0.16, 1, 0.3, 1)",
         zIndex: 30 - index,
       }}
-      className="top-0 left-0 max-w-96 border-8 border-white  cursor-grab drop-shadow-lg"
+      className="top-0 left-0 max-w-96 border-8 border-white  cursor-grab"
     >
       <motion.div className="drop-shadow-lg pointer-events-none select-none">
         <Image src={src} alt={alt} width={756} height={1008} />
