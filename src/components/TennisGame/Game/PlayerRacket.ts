@@ -14,6 +14,11 @@ export class PlayerRacket extends Racket {
   constructor() {
     super();
   }
+
+  public getWidth() {
+    return super.getWidth() * 3;
+  }
+
   public update(
     tennisCourt: TennisCourt,
     tennisBall: TennisBall,
@@ -36,22 +41,29 @@ export class PlayerRacket extends Racket {
 
     const netElevationOffset =
       tennisBall.getElevation() - tennisCourt.getNetElevation();
+
+    const MIN_SWING_OUTPUT = 1;
+    const MAX_SWING_OUTPUT = 4;
     const netDirectionCorrectionFactor = map(
       netElevationOffset,
       -tennisCourt.getNetElevation(),
       tennisCourt.getNetElevation() * 2,
-      4,
-      0
+      MAX_SWING_OUTPUT,
+      MIN_SWING_OUTPUT
     );
 
     const MAX_SWING_INPUT = -0.1;
     const MIN_SWING_INPUT = -0.03;
+
+    const MAX_ANGLE_OUTPUT = -1;
+    const MIN_ANGLE_OUTPUT = 0;
+
     const vertcalAccel = map(
       avgVelocity.y,
       MIN_SWING_INPUT,
       MAX_SWING_INPUT,
-      0,
-      -2 // go slightly down when the use strike hard
+      MIN_ANGLE_OUTPUT,
+      MAX_ANGLE_OUTPUT // go slightly down when the use strike hard
     );
     this.setSwingVertAccel(vertcalAccel + netDirectionCorrectionFactor);
     this.setSwingVelocity(Vector2D.multiply(avgVelocity, 1.5));
@@ -65,10 +77,10 @@ export class PlayerRacket extends Racket {
       newMousePosition.x,
       0.2,
       0.8,
-      tennisCourtDim.width * -0.5,
-      tennisCourtDim.width * 1.5
+      tennisCourtDim.width * -0.3,
+      tennisCourtDim.width * 1.3
     );
-    const yOffset = map(newMousePosition.y, 0.2, 0.8, 0, swingRange + 100);
+    const yOffset = map(newMousePosition.y, 0.2, 0.8, 0, swingRange + 200);
 
     const newX = xOffset + courtEdges.left;
     const newY = courtEdges.bottom - swingRange + yOffset;

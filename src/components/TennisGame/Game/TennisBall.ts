@@ -26,12 +26,15 @@ export class TennisBall {
 
   private color = "#1B2420";
 
-  private strikeThreshold = 8;
+  private smashThreshold = 8;
 
   private isBallOut = false;
 
   private hitSoundEffects: SoundEffect;
   private strikeSoundEffeect: AudioAsset;
+
+  private hasBounced: boolean = false;
+  private peakElevation: number = 0;
 
   constructor(initialPosition: Vector2D, initialVelocity: Vector2D) {
     this.velocity = initialVelocity;
@@ -39,8 +42,6 @@ export class TennisBall {
 
     // setup sounds
     const assets = AssetManager.getInstance();
-
-    console.log(assets.get<AudioAsset>("tennis-hit-1").isLoaded());
 
     this.hitSoundEffects = new SoundEffect([
       assets.get<AudioAsset>("tennis-hit-1"),
@@ -58,11 +59,77 @@ export class TennisBall {
     return this.position;
   }
 
+  public getHasBounced() {
+    return this.hasBounced;
+  }
+
+  public getPeakElevation() {
+    return this.peakElevation;
+  }
+
+  public getIsBallOut() {
+    return this.isBallOut;
+  }
+
+  public getDistance(racket: Racket) {
+    const distToBall = Vector2D.distance(
+      this.getPosition(),
+      racket.getPosition()
+    );
+    return distToBall;
+  }
+
+  private predictFramesToGround() {
+    let simElevation = this.elevation;
+    let simVertSpeed = 0;
+
+    let frames = 0;
+    while (simElevation > 0) {
+      simVertSpeed += this.gravity;
+      simElevation += simVertSpeed;
+      frames++;
+    }
+
+    return frames;
+  }
+
+  public predictOut(court: TennisCourt) {
+    const framesToGround = this.predictFramesToGround();
+
+    const { left, right, top, bottom } = court.getEdges();
+
+    const posXWhenGround = this.position.x + this.velocity.x * framesToGround;
+    if (posXWhenGround < left || posXWhenGround > right) {
+      return true;
+    }
+
+    const posYWhenGround = this.position.y + this.velocity.y * framesToGround;
+    if ((posYWhenGround < top || posYWhenGround > bottom) && !this.hasBounced) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private checkIsOut(tennisCourt: TennisCourt) {
+    const { top, right, bottom, left } = tennisCourt.getEdges();
+    // Handling when the ball is out of the playzone or not
+    if (this.position.y > bottom || this.position.y < top) {
+      return true;
+    }
+    if (this.position.x > right || this.position.x < left) {
+      return true;
+    }
+
+    return false;
+  }
+
   update(
     t: number,
     player: Racket,
     cpuRacket: Racket,
-    tennisCourt: TennisCourt
+    tennisCourt: TennisCourt,
+    onWin: (racket: Racket) => void
   ) {
     // step the ball position
     this.vertAccel += this.gravity;
@@ -71,6 +138,14 @@ export class TennisBall {
     // create an impulse for bouncing up
     if (this.elevation <= 0) {
       this.vertAccel *= -this.groundBounciness;
+      this.hasBounced = true;
+
+      if (this.checkIsOut(tennisCourt)) onWin(player);
+    }
+
+    // record how how high the ball has hit
+    if (this.peakElevation < this.elevation) {
+      this.peakElevation = this.elevation;
     }
 
     const { top, right, bottom, left } = tennisCourt.getEdges();
@@ -80,23 +155,12 @@ export class TennisBall {
       Math.abs(
         this.position.y - (top + tennisCourt.getDimension().height / 2)
       ) < 5 &&
-      this.elevation < tennisCourt.getNetElevation()
+      this.elevation < tennisCourt.getNetElevation() &&
+      this.position.x > left &&
+      this.position.x < right
     ) {
       // the ball is hitting the net
       this.velocity.y = -this.velocity.y;
-    }
-
-    // Handling when the ball is out of the playzone or not
-    this.isBallOut = false;
-    if (this.position.y > bottom || this.position.y < top) {
-      // console.log("out!");
-      // this.velocity.y = -this.velocity.y;
-      this.isBallOut = true;
-    }
-    if (this.position.x > right || this.position.x < left) {
-      // console.log("out!");
-      //this.velocity.x = -this.velocity.x;
-      this.isBallOut = true;
     }
 
     // check if hit player position
@@ -110,6 +174,9 @@ export class TennisBall {
     }
 
     if (canPlayerHit && this.hitTestWithRacket(player)) {
+      this.hasBounced = false; // reset bounce hit
+      this.peakElevation = 0; // reset peak elevation after hit
+
       this.lastPlayerHit = t;
       const isStrike = this.resolveRacketCollision(player);
       if (isStrike) {
@@ -120,6 +187,9 @@ export class TennisBall {
     }
 
     if (canCpuHit && this.hitTestWithRacket(cpuRacket)) {
+      this.hasBounced = false; // reset bounce hit
+      this.peakElevation = 0; // reset peak elevation after hit
+
       this.lastCpuHit = t;
       const isStrike = this.resolveRacketCollision(cpuRacket);
       if (isStrike) {
@@ -168,30 +238,29 @@ export class TennisBall {
     const newVelX =
       this.velocity.x * ballDirectionDampening + playerSwingDirection.x * 10;
 
-    // console.log(normalizedSwing);
     const newVelY =
       -this.velocity.y * 0.6 + swingOutput * playerSwingDirection.y;
 
-    let isStrike = false;
-    if (Math.abs(newVelY) > this.strikeThreshold) {
-      isStrike = true;
-      console.log("strike!");
+    let isSmash = false;
+    let strikeAngle = map(this.elevation, 0, 300, 2, -3);
+
+    if (Math.abs(newVelY) > this.smashThreshold) {
+      isSmash = true;
     }
 
     // we want
     // 1. the more forceful it is, the more straight the ball will be
     // 2. default uptilt
-    // console.log(1 * (1 - normalizedSwing));
 
     // const vertcialAccelInput = 3 * (1 - normalizedSwing);
 
     // neutralize the vertical acceleration
-    this.vertAccel = isStrike ? -1 : racket.getSwingVertAccel();
+    this.vertAccel = isSmash ? strikeAngle : racket.getSwingVertAccel();
 
     // apply the input to velocity
     this.velocity = new Vector2D(newVelX, newVelY);
 
-    return isStrike;
+    return isSmash;
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -205,6 +274,10 @@ export class TennisBall {
       ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, 2 * Math.PI);
       // ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
       ctx.fill();
+
+      // debug
+      // ctx.fillStyle = "rgba(0,0,0,1)";
+      // ctx.fillText(`${Math.floor(this.elevation)}`, 10, 10);
     });
 
     fake3dTransform(ctx, this.position, this.elevation, () => {

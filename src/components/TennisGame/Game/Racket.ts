@@ -62,10 +62,7 @@ export class Racket {
   }
 
   public followBallElevation(tennisCourt: TennisCourt, tennisBall: TennisBall) {
-    const distToBall = Vector2D.distance(
-      tennisBall.getPosition(),
-      this.getPosition()
-    );
+    const distToBall = tennisBall.getDistance(this);
 
     this.maxXPosition = tennisCourt.getEdges().left;
     this.minXPosition = tennisCourt.getEdges().right;

@@ -8,6 +8,17 @@ import { AudioAsset } from "./Game/AssetManager/AudioAsset";
 
 type Props = {};
 
+/**
+ *
+ * TODO:
+ *
+ * - player serve
+ * - point score detection
+ * - expose game serve API
+ * - HTML UI logic
+ *
+ */
+
 const TennisGameComponent = (props: Props) => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement>;
 
@@ -18,6 +29,9 @@ const TennisGameComponent = (props: Props) => {
   const handleGameClick = () => {
     setIsGameStarted(true);
 
+    if (gameRef.current) {
+      gameRef.current.destory();
+    }
     gameRef.current = new TennisGame(canvasRef.current);
   };
 

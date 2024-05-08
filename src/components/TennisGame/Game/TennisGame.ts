@@ -21,6 +21,8 @@ export class TennisGame {
   private ball: TennisBall;
   private tennisCourt: TennisCourt;
 
+  private winner: string | undefined = undefined;
+
   // private cpu: PlayerRacket = new PlayerRacket();
 
   constructor(canvas: HTMLCanvasElement) {
@@ -51,7 +53,7 @@ export class TennisGame {
   }
 
   private getInitialGameStates() {
-    const courtWidth = this.width * 0.3;
+    const courtWidth = this.width * 0.5;
     const tennisCourt = new TennisCourt(
       new Vector2D(this.width / 2, 200),
       courtWidth
@@ -61,17 +63,37 @@ export class TennisGame {
     const cpuRacket = new CPURacket();
     const ball = new TennisBall(
       new Vector2D(this.width / 2, tennisCourt.getEdges().top + 50),
-      new Vector2D(Math.random() * 2 - 1, 4)
+      new Vector2D(Math.random() * 3 - 1, 5)
     );
 
     return { tennisCourt, playerRacket, cpuRacket, ball };
   }
 
+  private onWin(racket: Racket) {
+    if (racket === this.playerRacket) {
+      console.log("player wins");
+      this.winner = "player";
+    }
+    if (racket === this.cpuRacket) {
+      console.log("cpu wins");
+      this.winner = "cpu";
+    }
+  }
+
   update(t: number) {
     // update the game logic here
     this.playerRacket.update(this.tennisCourt, this.ball, this.mouse);
-    this.cpuRacket.update(this.tennisCourt, this.ball, this.playerRacket);
-    this.ball.update(t, this.playerRacket, this.cpuRacket, this.tennisCourt);
+
+    if (this.winner === undefined) {
+      this.cpuRacket.update(this.tennisCourt, this.ball, this.playerRacket);
+      this.ball.update(
+        t,
+        this.playerRacket,
+        this.cpuRacket,
+        this.tennisCourt,
+        this.onWin.bind(this)
+      );
+    }
 
     // begin the rendering
     this.context.clearRect(0, 0, this.width, this.height);
@@ -109,26 +131,46 @@ export function fake3dTransform(
 ) {
   // const tiltFactor = 0.99;
   // const height = 600;
-  const scaleFactor = position.y * 0.002;
-  const yScaleCompress = 0.2;
+  const foreShorteningScaleFactor = (position.y + 700) * 0.002;
+  const renderingScale = 0.3;
+
+  const elevationHeightFactor = 0.3;
+  const yScaleCompress = 0.4;
+
   const viewportWidth = 1000;
   const viewportHeight = 600;
 
-  const yOriginOffset = viewportHeight * 0.3;
+  // const yOriginOffset = viewportHeight * 0.2;
+  const yOriginOffset = 100;
+  const yOriginOffsetPostTransform = 300;
 
   ctx.save();
   // easy draw
   // ctx.translate(position.x, position.y);
 
   // complex draw
-  ctx.translate(0, -elevation * scaleFactor);
   ctx.translate(
-    (viewportWidth / 2) * (1 - scaleFactor) + position.x * scaleFactor,
+    0,
+    -elevation * foreShorteningScaleFactor * elevationHeightFactor
+  );
+
+  ctx.translate(
+    (viewportWidth / 2) * (1 - foreShorteningScaleFactor * renderingScale) +
+      position.x * foreShorteningScaleFactor * renderingScale,
     yOriginOffset
   );
-  ctx.scale(scaleFactor, scaleFactor);
-  ctx.translate(0, position.y * yScaleCompress);
+
+  ctx.translate(
+    0,
+    position.y * yScaleCompress * foreShorteningScaleFactor * renderingScale
+  );
+  ctx.scale(foreShorteningScaleFactor, foreShorteningScaleFactor);
+  ctx.scale(renderingScale, renderingScale);
 
   draw();
   ctx.restore();
 }
+
+// export function getPointAndScale3D(position: Vector2D, elevation: number) {
+//   return {};
+// }
