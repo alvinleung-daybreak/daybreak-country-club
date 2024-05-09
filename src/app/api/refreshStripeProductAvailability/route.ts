@@ -16,6 +16,7 @@ export async function GET() {
     }
     return NextResponse.json({
       status: "Success",
+      allProducts,
     });
   } catch (error) {
     return NextResponse.json({ status: "Failed", error });
