@@ -10,7 +10,8 @@ type Props = {
   productInfo: SweatshirtProductInfo[];
 };
 
-const EMAIL_SUBSCRIPTION_LINK = "https://daybreakstudio.beehiiv.com/subscribe";
+export const EMAIL_SUBSCRIPTION_LINK =
+  "https://daybreakstudio.beehiiv.com/subscribe";
 
 const ProductForm = ({ productInfo }: Props) => {
   const [size, setSize] = useState(productInfo[0]?.size || "");

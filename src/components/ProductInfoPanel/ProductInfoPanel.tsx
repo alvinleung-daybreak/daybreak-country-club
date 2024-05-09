@@ -46,6 +46,11 @@ const ProductInfoPanel = (props: Props) => {
         the following: a custom Penn-branded collaborative tennis ball, a
         personalized welcome letter, and your very own membership card.
       </p>
+
+      <small className="mb-4 font-sans-xs opacity-50 max-w-[30ch]">
+        Susanna is 5’5” and wearing a size Medium. Dean is 6’1” and wearing a
+        size Large
+      </small>
       <div className="font-country-sans-md font-bold mb-14">$160.00</div>
 
       <ProductForm productInfo={productInfo} />
