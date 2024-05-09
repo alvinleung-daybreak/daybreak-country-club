@@ -3,32 +3,38 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import SizeSelector from "./SizeSelector";
 import PurchaseButton from "./PurchaseButton";
-import { AssetManager } from "../TennisGame/Game/AssetManager/AssetManager";
-import { AudioAsset } from "../TennisGame/Game/AssetManager/AudioAsset";
-import { SoundEffect } from "../TennisGame/Game/SoundEffect";
 import { useTennisHitSound } from "@/hooks/useTennisHitSound";
+import { SweatshirtProductInfo } from "@/app/SweatshirtProductInfo";
 
-type Props = {};
+type Props = {
+  productInfo: SweatshirtProductInfo[];
+};
 
-const sizes = [
-  { name: "s", isAvailable: true },
-  { name: "m", isAvailable: true },
-  { name: "l", isAvailable: false },
-  { name: "xl", isAvailable: true },
-];
+// const sizes = [
+//   { name: "s", isAvailable: true },
+//   { name: "m", isAvailable: true },
+//   { name: "l", isAvailable: false },
+//   { name: "xl", isAvailable: true },
+// ];
 
-const ProductInfoPanel = (props: Props) => {
-  const [size, setSize] = useState(sizes[0].name);
+const EMAIL_SUBSCRIPTION_LINK = "https://daybreakstudio.beehiiv.com/subscribe";
+
+const ProductInfoPanel = ({ productInfo }: Props) => {
+  const [size, setSize] = useState(productInfo[0].size);
+
   const isItemAvailable = useMemo(
-    () => sizes.find(({ name }) => name === size)?.isAvailable || false,
-    [size]
+    () => productInfo.find((info) => info.size === size)?.stock !== 0 || false,
+    [size, productInfo]
   );
 
-  const hitSoundEffect = useTennisHitSound();
+  const formActionHref = useMemo(() => {
+    if (isItemAvailable) {
+      return productInfo.find((info) => info.size === size)?.stripeLink;
+    }
+    return EMAIL_SUBSCRIPTION_LINK;
+  }, [productInfo, size, isItemAvailable]);
 
-  const handlePurchaseSubmit = () => {
-    console.log("checkout");
-  };
+  const hitSoundEffect = useTennisHitSound();
 
   const handleSelectorClicked = () => {
     hitSoundEffect.current?.trigger();
@@ -52,18 +58,15 @@ const ProductInfoPanel = (props: Props) => {
       </p>
       <div className="font-country-sans-md font-bold mb-14">$160.00</div>
 
-      <div className="w-full">
+      <form action={formActionHref} className="w-full">
         <SizeSelector
-          sizeInfos={sizes}
+          products={productInfo}
           onSelect={setSize}
           onClick={handleSelectorClicked}
           currentSize={size}
         />
-        <PurchaseButton
-          isSoldOut={!isItemAvailable}
-          onSubmit={handlePurchaseSubmit}
-        />
-      </div>
+        <PurchaseButton isSoldOut={!isItemAvailable} />
+      </form>
     </div>
   );
 };

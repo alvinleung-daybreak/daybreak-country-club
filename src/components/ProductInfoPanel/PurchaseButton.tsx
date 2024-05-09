@@ -2,13 +2,15 @@ import React from "react";
 
 type Props = {
   isSoldOut: boolean;
-  onSubmit: () => void;
 };
 
 const PurchaseButton = ({ isSoldOut }: Props) => {
   return (
     <div>
-      <button className="font-country-sans-sm font-bold px-4 py-4 bg-chalk-white text-forest-green w-full">
+      <button
+        type="submit"
+        className="font-country-sans-sm font-bold px-4 py-4 bg-chalk-white text-forest-green w-full"
+      >
         {isSoldOut ? "Notify me" : "Buy now"}
       </button>
       <div

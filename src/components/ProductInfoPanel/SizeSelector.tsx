@@ -3,22 +3,18 @@ import { motion } from "framer-motion";
 import React, { useEffect } from "react";
 import { AssetManager } from "../TennisGame/Game/AssetManager/AssetManager";
 import { AudioAsset } from "../TennisGame/Game/AssetManager/AudioAsset";
-
-export type SizeInfo = {
-  name: string;
-  isAvailable: boolean;
-};
+import { SizingInfo, SweatshirtProductInfo } from "@/app/SweatshirtProductInfo";
 
 type Props = {
-  sizeInfos: SizeInfo[];
-  onSelect: (sizeInfo: string) => void;
+  products: SweatshirtProductInfo[];
+  onSelect: (sizeInfo: SizingInfo) => void;
   onClick: () => void;
   currentSize: string; // the name of currentSize
 };
 
-const SizeSelector = ({ onSelect, currentSize, onClick, sizeInfos }: Props) => {
+const SizeSelector = ({ onSelect, currentSize, onClick, products }: Props) => {
   const onOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSelect(e.target.value);
+    onSelect(e.target.value as SizingInfo);
   };
 
   const handleClick = (event: MouseEvent) => {
@@ -29,24 +25,24 @@ const SizeSelector = ({ onSelect, currentSize, onClick, sizeInfos }: Props) => {
     <div
       className={`grid justify-around w-full divide-x border-x`}
       style={{
-        gridTemplateColumns: `repeat(${sizeInfos.length}, minmax(0, 1fr)`,
+        gridTemplateColumns: `repeat(${products.length}, minmax(0, 1fr)`,
       }}
     >
-      {sizeInfos.map((info, index) => {
-        const isCurrent = currentSize === info.name;
+      {products.map((info, index) => {
+        const isCurrent = currentSize === info.size;
         return (
           <div key={index} className="">
             <input
               className="hidden"
-              checked={currentSize === info.name}
+              checked={currentSize === info.size}
               onChange={onOptionChange}
               type="radio"
               name="size"
-              value={info.name}
-              id={info.name}
+              value={info.size}
+              id={info.size}
             />
             <motion.label
-              htmlFor={info.name}
+              htmlFor={info.size}
               className="font-country-sans-sm font-bold cursor-pointer block pb-2 select-none"
               style={{
                 transformOrigin: "bottom center",
@@ -79,7 +75,7 @@ const SizeSelector = ({ onSelect, currentSize, onClick, sizeInfos }: Props) => {
                   }}
                 />
               </div>
-              {info.name}
+              {info.size}
             </motion.label>
           </div>
         );

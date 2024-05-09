@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model PurchaseRecord {
+  id           String   @id @default(uuid())
+  time         DateTime
+  email        String
+  receptUrl    String
+  amountInCent Int
+  createdAt    DateTime
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id              String           @id @default(uuid())
+  name            String
+  description     String
+  priceInCent     Int
+  stock           Int
+  stripeLink      String
+  stripeProductId String
+  purchaseRecord  PurchaseRecord[]
+}
