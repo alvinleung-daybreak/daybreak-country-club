@@ -35,8 +35,18 @@ const StackGallery = ({ images }: Props) => {
     setCurrentSlide(nextSlide);
   };
 
+  const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const isInView = useInView(containerRef);
+
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [isInView]);
+
   return (
-    <div className="relative overflow-hidden mt-12 pt-12 pb-20 w-full max-w-[48rem] flex justify-center overflow-x-hidden">
+    <div
+      ref={containerRef}
+      className="relative overflow-hidden mt-12 pt-12 pb-20 w-full max-w-[48rem] flex justify-center overflow-x-hidden"
+    >
       <div className="w-[10%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-40 left-0 top-0 bottom-0" />
       <div className="w-[10%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-40 right-0 top-0 bottom-0" />
       <div className="relative">
@@ -116,7 +126,8 @@ const StackGallerySlide = ({
     hasFlickDetected.current = false;
   });
 
-  const rotationOffset = random * 20 - 10;
+  const isInView = useInView(containerRef, { amount: 0.5 });
+  const rotationOffset = random * 40 - 20;
   const rotateZ = useInactiveMotionValue(
     useTransform(
       x,
@@ -124,7 +135,7 @@ const StackGallerySlide = ({
       [-20 + rotationOffset, +rotationOffset, 20 + rotationOffset]
     ),
     isDragging,
-    rotationOffset
+    isInView ? rotationOffset : 0
   );
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -189,10 +200,14 @@ const StackGallerySlide = ({
         // opacity: isSlidePastCurrent ? 0 : 1,
         rotateZ,
         scale: isDragging ? 1.05 : 1,
-        transition: "transform .6s cubic-bezier(0.16, 1, 0.3, 1)",
+        transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1)",
         zIndex: 30 - index,
+        cursor: "grab",
       }}
-      className="top-0 left-0 max-w-96 border-8 border-white  cursor-grab"
+      whileTap={{
+        cursor: "grabbing",
+      }}
+      className="top-0 left-0 max-w-96 border-8 border-white "
     >
       <motion.div className="drop-shadow-lg pointer-events-none select-none">
         <Image src={src} alt={alt} width={756} height={1008} />
