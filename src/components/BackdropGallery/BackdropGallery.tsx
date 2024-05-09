@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import Image from "next/image";
 import { ImageInfo } from "../ProductGallery/ProductGallery";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { AnimationConfig } from "../AnimationConfig";
 
 type Props = {
   images: ImageInfo[];
@@ -19,9 +20,12 @@ const BackdropGallery = ({ images }: Props) => {
     setCurrentSlide(currentSlide + 1);
   };
 
+  const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const isInView = useInView(containerRef, { amount: 0.2 });
+
   return (
-    <div className="my-12 flex flex-col gap-8">
-      <div className="relative ">
+    <div className="my-12 flex flex-col gap-8" ref={containerRef}>
+      <div className="relative overflow-hidden">
         {images.map((img, index) => {
           return (
             <motion.div
@@ -31,6 +35,11 @@ const BackdropGallery = ({ images }: Props) => {
               }}
               animate={{
                 opacity: currentSlide === index ? 1 : 0,
+                scale: isInView ? 1 : 1.1,
+                transition: {
+                  duration: 4,
+                  ease: AnimationConfig.EASING,
+                },
               }}
               key={index}
               onClick={nextSlide}
