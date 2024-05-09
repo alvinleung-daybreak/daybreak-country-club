@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import { SizingInfo, SweatshirtProductInfo } from "@/app/SweatshirtProductInfo";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const productsData = await prisma.product.findMany();
   const productInfo: SweatshirtProductInfo[] = productsData.map(
