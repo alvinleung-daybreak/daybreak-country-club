@@ -17,6 +17,9 @@ export async function GET() {
       const stripeProduct = await stripe.products.retrieve(
         prismaProduct.stripeProductId
       );
+
+      console.log(stripeProduct.url);
+
       // add the updated link
       await prisma.product.update({
         where: { id: prismaProduct.id },
