@@ -2,6 +2,7 @@
 
 import BackdropGallery from "@/components/BackdropGallery/BackdropGallery";
 import CountryClubNav from "@/components/CountryClubNav/CountryClubNav";
+import Divider from "@/components/Divider/Divider";
 import ProductGallery from "@/components/ProductGallery/ProductGallery";
 import ProductInfoPanel from "@/components/ProductInfoPanel/ProductInfoPanel";
 import BTSSection from "@/components/Sections/BTSSection/BTSSection";
@@ -55,15 +56,17 @@ export default function Home() {
         </section>
         <div className="bg-chalk-white text-forest-green flex flex-col">
           <BTSSection />
+          <Divider />
           <BackdropScection />
-
+          <Divider />
           <section className="flex flex-row justify-center my-24">
             <TennisGameComponent />
           </section>
         </div>
       </motion.main>
       <div className="bg-chalk-white text-forest-green">
-        <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center border-t py-28">
+        <Divider />
+        <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center py-28">
           <div className="mb-8 px-4">
             <SassyDaybreakLogo />
           </div>
