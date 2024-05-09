@@ -1,8 +1,12 @@
+"use client";
+
 import BackdropGallery from "@/components/BackdropGallery/BackdropGallery";
 import CountryClubNav from "@/components/CountryClubNav/CountryClubNav";
 import ProductGallery from "@/components/ProductGallery/ProductGallery";
 import ProductInfoPanel from "@/components/ProductInfoPanel/ProductInfoPanel";
 import StackGallery from "@/components/StackGallery/StackGallery";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 const productImages = [
   {
@@ -73,11 +77,23 @@ const backdropImages = [
   },
 ];
 
-export default async function Home() {
+export default function Home() {
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
+
   return (
     <div className="bg-forest-green text-chalk-white border-chalk-white divide-chalk-white min-h-screen font-sans-sm">
-      <CountryClubNav />
-      <main>
+      <CountryClubNav
+        onNavExpand={() => setIsNavExpanded(true)}
+        onNavCollapse={() => setIsNavExpanded(false)}
+      />
+      <motion.main
+        initial={{
+          opacity: 1,
+        }}
+        animate={{
+          opacity: isNavExpanded ? 0.2 : 1,
+        }}
+      >
         <section className="grid md:grid-cols-2 mx-4 md:mx-12 border-l border-r md:divide-x">
           <ProductGallery images={productImages} />
           <div className="md:sticky md:top-0 flex py md:items-center justify-center md:max-h-screen">
@@ -131,7 +147,7 @@ export default async function Home() {
             <BackdropGallery images={backdropImages} />
           </section>
         </div>
-      </main>
+      </motion.main>
       <div className="bg-chalk-white text-forest-green">
         <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center border-t py-28">
           <div className="mb-8 px-4">
