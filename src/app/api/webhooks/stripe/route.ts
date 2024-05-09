@@ -42,10 +42,7 @@ export async function POST(req: NextRequest) {
           // console.log(lineItems);
 
           const stripeProductId = String(lineItems.data[0].price?.product);
-          const email = session.customer_email;
-
-          console.log(session);
-          console.log(stripeProductId);
+          const email = session.customer_details?.email;
 
           const prismaProduct = await prisma.product.findFirst({
             where: { stripeProductId: stripeProductId },
@@ -59,7 +56,6 @@ export async function POST(req: NextRequest) {
             throw "Product not found in database, abort adding to purchase record";
           }
 
-          console.log("adding purchase record");
           await prisma.purchaseRecord.create({
             data: {
               receiptEmail: email,
@@ -71,7 +67,6 @@ export async function POST(req: NextRequest) {
               },
             },
           });
-          console.log("decrementing stock");
           await prisma.product.update({
             where: {
               id: prismaProduct.id,
