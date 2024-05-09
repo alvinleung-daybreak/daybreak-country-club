@@ -13,20 +13,20 @@ import { useState } from "react";
 
 const productImages = [
   {
-    src: "/country-club/dcc-embroidery-detail.jpg",
-    alt: "Sweatshirt embroidery details",
-  },
-  {
-    src: "/country-club/dcc-print-collateral.jpg",
-    alt: "Sweatshirt collaterals",
-  },
-  {
     src: "/country-club/dcc-sweatshirt-flatlay.jpg",
     alt: "Sweatshirt flatlay",
   },
   {
+    src: "/country-club/dcc-embroidery-detail.jpg",
+    alt: "Sweatshirt embroidery details",
+  },
+  {
     src: "/country-club/dcc-sweatshirt-modelled.jpg",
     alt: "Sweatshirt on our models",
+  },
+  {
+    src: "/country-club/dcc-print-collateral.jpg",
+    alt: "Sweatshirt collaterals",
   },
 ];
 
