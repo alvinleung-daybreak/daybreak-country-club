@@ -40,6 +40,7 @@ const config: Config = {
         "country-script-display": {
           "font-family": "p22-albemarle-pro",
           "font-size": "48px",
+          "line-height": "1.2em",
         },
       },
       md: {
