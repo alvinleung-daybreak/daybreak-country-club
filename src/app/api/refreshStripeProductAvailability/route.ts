@@ -4,6 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+export const dynamic = "force-dynamic";
 export async function GET() {
   const allProducts = await prisma.product.findMany();
 
