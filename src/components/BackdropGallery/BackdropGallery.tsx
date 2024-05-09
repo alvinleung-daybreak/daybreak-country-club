@@ -58,7 +58,14 @@ const BackdropGallery = ({ images }: Props) => {
               }}
               key={index}
               onClick={() => setCurrentSlide(index)}
+              className="relative"
             >
+              <motion.div
+                className="absolute -inset-1 border border-forest-green"
+                animate={{
+                  opacity: currentSlide === index ? 1 : 0,
+                }}
+              />
               <Image
                 src={img.src}
                 alt={img.alt}
