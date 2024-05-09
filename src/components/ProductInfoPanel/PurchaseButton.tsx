@@ -26,7 +26,7 @@ const PurchaseButton = ({ isSoldOut }: Props) => {
       >
         Sign up to our newsletter to be the first to hear about future restocks
         and stay up-to-date on all things Daybreak{" "}
-        <a href={EMAIL_SUBSCRIPTION_LINK} target="_blank">
+        <a href={EMAIL_SUBSCRIPTION_LINK} target="_blank" className="underline">
           here
         </a>
         .
