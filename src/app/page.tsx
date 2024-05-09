@@ -89,7 +89,7 @@ export default async function Home() {
             <small className="font-country-sans-sm mb-6">
               Behind the scenes
             </small>
-            <h2 className="font-country-script-display mb-12">
+            <h2 className="font-country-script-display mb-12 text-center">
               Country club photoshoot & ephemera
             </h2>
             <div className="flex flex-col md:flex-row max-w-[70ch] text-justify gap-4 mx-4">
@@ -112,7 +112,7 @@ export default async function Home() {
             <div className="mb-12">
               <Crown />
             </div>
-            <h2 className="font-country-script-display mb-12">
+            <h2 className="font-country-script-display mb-12 text-center">
               The making of our backdrop
             </h2>
             <div className="flex flex-col md:flex-row text-justify gap-4 mx-4">
