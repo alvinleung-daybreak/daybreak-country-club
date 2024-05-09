@@ -8,23 +8,26 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const allProducts = await prisma.product.findMany();
 
+  const allStripePaymentLinks = await stripe.paymentLinks.list();
+
   try {
     for (let i = 0; i < allProducts.length; i++) {
       const prismaProduct = allProducts[i];
-      await stripe.products.update(prismaProduct.stripeProductId, {
-        active: prismaProduct.stock > 0,
-      });
-
-      const stripeProduct = await stripe.products.retrieve(
-        prismaProduct.stripeProductId
+      const productPaymentLink = allStripePaymentLinks.data.find(
+        ({ url }) => url === prismaProduct.stripeLink
       );
 
-      console.log(stripeProduct.url);
+      if (!productPaymentLink?.id) {
+        throw "Cannot procceed: payment link not found";
+      }
 
-      // add the updated link
-      await prisma.product.update({
-        where: { id: prismaProduct.id },
-        data: { stripeLink: stripeProduct.url as string },
+      const isProductAvailable = prismaProduct.stock > 0;
+
+      await stripe.paymentLinks.update(productPaymentLink.id, {
+        active: isProductAvailable,
+      });
+      await stripe.products.update(prismaProduct.stripeProductId, {
+        active: isProductAvailable,
       });
     }
 
