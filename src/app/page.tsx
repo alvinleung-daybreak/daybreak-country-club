@@ -3,8 +3,6 @@ import CountryClubNav from "@/components/CountryClubNav/CountryClubNav";
 import ProductGallery from "@/components/ProductGallery/ProductGallery";
 import ProductInfoPanel from "@/components/ProductInfoPanel/ProductInfoPanel";
 import StackGallery from "@/components/StackGallery/StackGallery";
-import prisma from "../utils/prisma";
-import { SizingInfo, SweatshirtProductInfo } from "./SweatshirtProductInfo";
 
 const productImages = [
   {
@@ -76,20 +74,6 @@ const backdropImages = [
 ];
 
 export default async function Home() {
-  const productsData = await prisma.product.findMany();
-  const productInfo: SweatshirtProductInfo[] = productsData.map(
-    ({ stripeLink, name, priceInCent, stock }) => {
-      return {
-        stripeLink: stripeLink,
-        size: name
-          .replace("Daybreak Country Club Sweatshirt ", "")
-          .toLocaleLowerCase() as SizingInfo,
-        stock: stock,
-        priceInCent: priceInCent,
-      };
-    }
-  );
-
   return (
     <div className="bg-forest-green text-chalk-white border-chalk-white divide-chalk-white min-h-screen font-sans-sm">
       <CountryClubNav />
@@ -97,7 +81,7 @@ export default async function Home() {
         <section className="grid md:grid-cols-2 min-h-screen mx-4 md:mx-12 border-l border-r md:divide-x">
           <ProductGallery images={productImages} />
           <div className="md:sticky md:top-0 flex py md:items-center justify-center md:max-h-screen">
-            <ProductInfoPanel productInfo={productInfo} />
+            <ProductInfoPanel />
           </div>
         </section>
         <div className="bg-chalk-white text-forest-green flex flex-col">

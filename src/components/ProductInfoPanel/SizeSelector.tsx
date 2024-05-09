@@ -23,7 +23,7 @@ const SizeSelector = ({ onSelect, currentSize, onClick, products }: Props) => {
 
   return (
     <div
-      className={`grid justify-around w-full divide-x border-x`}
+      className={`grid justify-around w-full divide-x border-x h-12`}
       style={{
         gridTemplateColumns: `repeat(${products.length}, minmax(0, 1fr)`,
       }}

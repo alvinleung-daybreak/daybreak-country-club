@@ -5,10 +5,10 @@ import SizeSelector from "./SizeSelector";
 import PurchaseButton from "./PurchaseButton";
 import { useTennisHitSound } from "@/hooks/useTennisHitSound";
 import { SweatshirtProductInfo } from "@/app/SweatshirtProductInfo";
+import ProductForm from "./ProductForm";
+import { AnimatePresence } from "framer-motion";
 
-type Props = {
-  productInfo: SweatshirtProductInfo[];
-};
+type Props = {};
 
 // const sizes = [
 //   { name: "s", isAvailable: true },
@@ -17,28 +17,18 @@ type Props = {
 //   { name: "xl", isAvailable: true },
 // ];
 
-const EMAIL_SUBSCRIPTION_LINK = "https://daybreakstudio.beehiiv.com/subscribe";
+const ProductInfoPanel = (props: Props) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [productInfo, setProductInfo] = useState<SweatshirtProductInfo[]>([]);
 
-const ProductInfoPanel = ({ productInfo }: Props) => {
-  const [size, setSize] = useState(productInfo[0].size);
-
-  const isItemAvailable = useMemo(
-    () => productInfo.find((info) => info.size === size)?.stock !== 0 || false,
-    [size, productInfo]
-  );
-
-  const formActionHref = useMemo(() => {
-    if (isItemAvailable) {
-      return productInfo.find((info) => info.size === size)?.stripeLink;
+  useEffect(() => {
+    async function load() {
+      const result = await fetch("/api/products");
+      setProductInfo(await result.json());
+      setIsLoading(false);
     }
-    return EMAIL_SUBSCRIPTION_LINK;
-  }, [productInfo, size, isItemAvailable]);
-
-  const hitSoundEffect = useTennisHitSound();
-
-  const handleSelectorClicked = () => {
-    hitSoundEffect.current?.trigger();
-  };
+    load();
+  }, []);
 
   return (
     <div className="flex flex-col items-center text-center mx-8 font-sans-sm max-w-[42ch]">
@@ -58,15 +48,7 @@ const ProductInfoPanel = ({ productInfo }: Props) => {
       </p>
       <div className="font-country-sans-md font-bold mb-14">$160.00</div>
 
-      <form action={formActionHref} className="w-full">
-        <SizeSelector
-          products={productInfo}
-          onSelect={setSize}
-          onClick={handleSelectorClicked}
-          currentSize={size}
-        />
-        <PurchaseButton isSoldOut={!isItemAvailable} />
-      </form>
+      <ProductForm productInfo={productInfo} />
     </div>
   );
 };
