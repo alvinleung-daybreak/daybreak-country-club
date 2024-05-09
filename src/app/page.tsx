@@ -35,86 +35,100 @@ export default function Home() {
   const [isNavExpanded, setIsNavExpanded] = useState(false);
 
   return (
-    <div className="bg-forest-green text-chalk-white border-chalk-white divide-chalk-white min-h-screen font-sans-sm">
-      <CountryClubNav
-        onNavExpand={() => setIsNavExpanded(true)}
-        onNavCollapse={() => setIsNavExpanded(false)}
+    <>
+      <div
+        className="fixed left-0 right-0 bottom-0 top-0 pointer-events-none mix-blend-multiply opacity-30"
+        style={{
+          backgroundImage: "url('./dcc-paper-texture-darken.jpg')",
+          backgroundRepeat: "round",
+          zIndex: 10000,
+        }}
       />
-      <motion.main
-        initial={{
-          opacity: 1,
-        }}
-        animate={{
-          opacity: isNavExpanded ? 0.2 : 1,
-        }}
-      >
-        <section className="grid md:grid-cols-2 mx-4 md:mx-12 border-l border-r md:divide-x">
-          <ProductGallery images={productImages} />
-          <div className="md:sticky md:top-16 flex py-12 md:items-center justify-center md:max-h-screen">
-            <ProductInfoPanel />
-          </div>
-        </section>
-        <div className="bg-chalk-white text-forest-green flex flex-col">
-          <BTSSection />
-          <Divider />
-          <BackdropScection />
-          <Divider />
-          <section className="flex flex-row justify-center my-24">
-            <TennisGameComponent />
+      <div className="bg-forest-green text-chalk-white border-chalk-white divide-chalk-white min-h-screen font-sans-sm">
+        <CountryClubNav
+          onNavExpand={() => setIsNavExpanded(true)}
+          onNavCollapse={() => setIsNavExpanded(false)}
+        />
+
+        <motion.main
+          initial={{
+            opacity: 1,
+          }}
+          animate={{
+            opacity: isNavExpanded ? 0.2 : 1,
+          }}
+        >
+          <section className="grid md:grid-cols-2 mx-4 md:mx-12 border-l border-r md:divide-x">
+            <ProductGallery images={productImages} />
+            <div className="md:sticky md:top-16 flex py-12 md:items-center justify-center md:max-h-screen">
+              <ProductInfoPanel />
+            </div>
           </section>
-        </div>
-      </motion.main>
-      <motion.div
-        className="bg-chalk-white text-forest-green"
-        initial={{
-          opacity: 1,
-        }}
-        animate={{
-          opacity: isNavExpanded ? 0.2 : 1,
-        }}
-      >
-        <Divider />
-        <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center py-28">
-          <div className="mb-8 px-4">
-            <SassyDaybreakLogo />
+          <div className="bg-chalk-white text-forest-green flex flex-col">
+            <BTSSection />
+            <Divider />
+            <BackdropScection />
+            <Divider />
+            <section className="flex flex-row justify-center my-24">
+              <TennisGameComponent />
+            </section>
           </div>
-          <div className="mb-8">
-            <div>Daybreak Studio</div>
-            <div className="opacity-50">72 Stafford St, Unit 400</div>
-            <div className="opacity-50">Toronto, ON M6J 2R9</div>
-          </div>
-          <div className="mb-8">
-            <div>Contact</div>
-            <a href="mailto:hello@daybreak.studio" className="block opacity-50">
-              hello@daybreak.studio
-            </a>
-            <a
-              href="mailto:careers@daybreak.studio"
-              className="block opacity-50"
-            >
-              careers@daybreak.studio
-            </a>
-          </div>
-          <div className="mb-8">
-            <div>Socials</div>
-            <a
-              className="block opacity-50"
-              target="_blank"
-              href="https://www.instagram.com/daybreakstudio/"
-            >
-              Instagram
-            </a>
-            <a
-              className="block opacity-50"
-              target="_blank"
-              href="https://twitter.com/madebydaybreak"
-            >
-              Twitter
-            </a>
-          </div>
-        </footer>
-      </motion.div>
-    </div>
+        </motion.main>
+        <motion.div
+          className="bg-chalk-white text-forest-green"
+          initial={{
+            opacity: 1,
+          }}
+          animate={{
+            opacity: isNavExpanded ? 0.2 : 1,
+          }}
+        >
+          <Divider />
+          <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center py-28">
+            <div className="mb-8 px-4">
+              <SassyDaybreakLogo />
+            </div>
+            <div className="mb-8">
+              <div>Daybreak Studio</div>
+              <div className="opacity-50">72 Stafford St, Unit 400</div>
+              <div className="opacity-50">Toronto, ON M6J 2R9</div>
+            </div>
+            <div className="mb-8">
+              <div>Contact</div>
+              <a
+                href="mailto:hello@daybreak.studio"
+                className="block opacity-50"
+              >
+                hello@daybreak.studio
+              </a>
+              <a
+                href="mailto:careers@daybreak.studio"
+                className="block opacity-50"
+              >
+                careers@daybreak.studio
+              </a>
+            </div>
+            <div className="mb-8">
+              <div>Socials</div>
+              <a
+                className="block opacity-50"
+                target="_blank"
+                href="https://www.instagram.com/daybreakstudio/"
+              >
+                Instagram
+              </a>
+              <a
+                className="block opacity-50"
+                target="_blank"
+                href="https://twitter.com/madebydaybreak"
+              >
+                Twitter
+              </a>
+            </div>
+          </footer>
+        </motion.div>
+      </div>
+    </>
   );
 }
 
