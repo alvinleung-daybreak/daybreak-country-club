@@ -104,15 +104,16 @@ export class TennisCourt {
     );
     // draw bounding box
     ctx.strokeStyle = lineColor;
-    ctx.beginPath();
 
-    // the bounding square
+    // the fill of bounding square
+    ctx.beginPath();
+    ctx.fillStyle = "#134F34";
     ctx.moveTo(topLeft.x, topLeft.y);
     ctx.lineTo(topRight.x, topRight.y);
     ctx.lineTo(bottomRight.x, bottomRight.y);
     ctx.lineTo(bottomLeft.x, bottomLeft.y);
     ctx.lineTo(topLeft.x, topLeft.y);
-    ctx.stroke();
+    ctx.fill();
 
     // top service line
     ctx.beginPath();
@@ -154,6 +155,14 @@ export class TennisCourt {
     ctx.beginPath();
     ctx.moveTo(topRightInner.x, topRightInner.y);
     ctx.lineTo(bottomRightInner.x, bottomRightInner.y);
+    ctx.stroke();
+
+    // the bounding square
+    ctx.moveTo(topLeft.x, topLeft.y);
+    ctx.lineTo(topRight.x, topRight.y);
+    ctx.lineTo(bottomRight.x, bottomRight.y);
+    ctx.lineTo(bottomLeft.x, bottomLeft.y);
+    ctx.lineTo(topLeft.x, topLeft.y);
     ctx.stroke();
 
     ctx.strokeStyle = "transparent";

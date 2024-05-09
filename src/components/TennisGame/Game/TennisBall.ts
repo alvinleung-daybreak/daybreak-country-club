@@ -356,7 +356,7 @@ export class TennisBall {
 
   render(ctx: CanvasRenderingContext2D, renderer: Fake3dRenderer) {
     // ctx.rect(this.position.x, this.position.y, this.size, this.size);
-    ctx.fillText(`${this.position.x}`, 50, 50);
+    // ctx.fillText(`${this.position.x}`, 50, 50);
 
     renderer.fake3dTransform(ctx, this.position, 0, () => {
       // shadow
