@@ -44,22 +44,19 @@ export async function POST(req: NextRequest) {
           const stripeProductId = String(lineItems.data[0].price?.product);
           const email = session.customer_email;
 
+          console.log(session);
+          console.log(stripeProductId);
+
           const prismaProduct = await prisma.product.findFirst({
             where: { stripeProductId: stripeProductId },
           });
 
           if (!email) {
-            console.log(
-              "Email provided is empty, abort adding purchase record"
-            );
-            return;
+            throw "Email provided is empty, abort adding purchase record";
           }
 
           if (!prismaProduct) {
-            console.log(
-              "Product not found in database, abort adding to purchase record"
-            );
-            return;
+            throw "Product not found in database, abort adding to purchase record";
           }
 
           console.log("adding purchase record");
