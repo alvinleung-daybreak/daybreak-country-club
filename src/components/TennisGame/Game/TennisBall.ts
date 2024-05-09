@@ -158,9 +158,9 @@ export class TennisBall {
   ) {
     if (this.checkIsOut(tennisCourt)) {
       if (this.hasBounced) {
-        onWin(this.currentTurn === player ? cpuRacket : player);
+        onWin(this.currentTurn === player ? cpuRacket : player, "out");
       } else {
-        onWin(this.currentTurn === player ? player : cpuRacket);
+        onWin(this.currentTurn === player ? player : cpuRacket, "out");
       }
     }
 
@@ -169,14 +169,14 @@ export class TennisBall {
       this.checkBouncedCourtSide(tennisCourt) < 0 &&
       this.currentTurn === cpuRacket
     ) {
-      onWin(cpuRacket);
+      onWin(cpuRacket, "score");
     }
     // bounce on cpu's own court
     if (
       this.checkBouncedCourtSide(tennisCourt) > 0 &&
       this.currentTurn === player
     ) {
-      onWin(player);
+      onWin(player, "score");
     }
   }
 
@@ -185,7 +185,7 @@ export class TennisBall {
     cpuRacket: Racket,
     onWin: WinStateHandler
   ) {
-    onWin(this.currentTurn === player ? player : cpuRacket);
+    onWin(this.currentTurn === player ? player : cpuRacket, "let");
   }
 
   update(

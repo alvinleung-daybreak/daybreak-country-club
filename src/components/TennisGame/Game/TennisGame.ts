@@ -7,7 +7,7 @@ import { TennisBall } from "./TennisBall";
 import { TennisCourt } from "./TennisCourt";
 import Vector2D from "./Vector2D";
 
-export type WinStateHandler = (racket: Racket) => void;
+export type WinStateHandler = (racket: Racket, reason: string) => void;
 
 export class TennisGame {
   private canvas: HTMLCanvasElement;
@@ -27,12 +27,17 @@ export class TennisGame {
 
   // private cpu: PlayerRacket = new PlayerRacket();
 
+  private boundingClientRectWidth = 0;
+  private boundingClientRectHeight = 0;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.resize(this.canvas.width, this.canvas.height);
 
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     canvas.addEventListener("mousemove", this.handleMouseMove.bind(this));
+    window.addEventListener("resize", this.handleScreenResize.bind(this));
+    this.handleScreenResize();
 
     // init
     const { playerRacket, cpuRacket, ball, tennisCourt } =
@@ -50,8 +55,13 @@ export class TennisGame {
   }
 
   handleMouseMove(e: MouseEvent) {
-    this.mouse.x = e.clientX / this.width;
-    this.mouse.y = e.clientY / this.height;
+    this.mouse.x = e.clientX / this.boundingClientRectWidth;
+    this.mouse.y = e.clientY / this.boundingClientRectHeight;
+  }
+  handleScreenResize() {
+    const bounds = this.canvas.getBoundingClientRect();
+    this.boundingClientRectHeight = bounds.height;
+    this.boundingClientRectWidth = bounds.width;
   }
 
   private getInitialGameStates() {
@@ -75,7 +85,7 @@ export class TennisGame {
     return { tennisCourt, playerRacket, cpuRacket, ball };
   }
 
-  private onWin(racket: Racket) {
+  private onWin(racket: Racket, reason: string) {
     if (this.winner) {
       console.log("winner has been decided");
       return;
@@ -84,6 +94,9 @@ export class TennisGame {
     if (racket === this.playerRacket) {
       console.log("player wins");
       this.winner = "player";
+
+      const assets = AssetManager.getInstance();
+      assets.get<AudioAsset>("ambience-cheer").play();
     }
     if (racket === this.cpuRacket) {
       console.log("cpu wins");
@@ -136,6 +149,7 @@ export class TennisGame {
   }
   destory() {
     this.canvas.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("resize", this.handleScreenResize);
     cancelAnimationFrame(this.animFrame);
   }
 }
