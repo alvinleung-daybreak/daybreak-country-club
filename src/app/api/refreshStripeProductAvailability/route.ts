@@ -9,11 +9,21 @@ export async function GET() {
 
   try {
     for (let i = 0; i < allProducts.length; i++) {
-      const product = allProducts[i];
-      await stripe.products.update(product.stripeProductId, {
-        active: product.stock > 0,
+      const prismaProduct = allProducts[i];
+      await stripe.products.update(prismaProduct.stripeProductId, {
+        active: prismaProduct.stock > 0,
+      });
+
+      const stripeProduct = await stripe.products.retrieve(
+        prismaProduct.stripeProductId
+      );
+      // add the updated link
+      await prisma.product.update({
+        where: { id: prismaProduct.id },
+        data: { stripeLink: stripeProduct.url as string },
       });
     }
+
     return NextResponse.json({
       status: "Success",
       allProducts,
