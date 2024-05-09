@@ -64,7 +64,15 @@ export default function Home() {
           </section>
         </div>
       </motion.main>
-      <div className="bg-chalk-white text-forest-green">
+      <motion.div
+        className="bg-chalk-white text-forest-green"
+        initial={{
+          opacity: 1,
+        }}
+        animate={{
+          opacity: isNavExpanded ? 0.2 : 1,
+        }}
+      >
         <Divider />
         <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center py-28">
           <div className="mb-8 px-4">
@@ -89,11 +97,23 @@ export default function Home() {
           </div>
           <div className="mb-8">
             <div>Socials</div>
-            <a className="block opacity-50">Instagram</a>
-            <a className="block opacity-50">Twitter</a>
+            <a
+              className="block opacity-50"
+              target="_blank"
+              href="https://www.instagram.com/daybreakstudio/"
+            >
+              Instagram
+            </a>
+            <a
+              className="block opacity-50"
+              target="_blank"
+              href="https://twitter.com/madebydaybreak"
+            >
+              Twitter
+            </a>
           </div>
         </footer>
-      </div>
+      </motion.div>
     </div>
   );
 }

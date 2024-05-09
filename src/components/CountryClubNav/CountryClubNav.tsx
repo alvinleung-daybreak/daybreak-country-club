@@ -66,12 +66,14 @@ const CountryClubNav = ({ onNavExpand, onNavCollapse }: Props) => {
             <a
               className="font-cond-sm"
               href="https://www.instagram.com/daybreakstudio/"
+              target="_blank"
             >
               Instagram
             </a>
             <a
               className="font-cond-sm"
               href="https://twitter.com/madebydaybreak"
+              target="_blank"
             >
               Twitter
             </a>
