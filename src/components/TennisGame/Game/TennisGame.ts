@@ -1,6 +1,7 @@
 import { AssetManager } from "./AssetManager/AssetManager";
 import { AudioAsset } from "./AssetManager/AudioAsset";
 import { CPURacket } from "./CPURacket";
+import { Fake3dRenderer } from "./Fake3dRenderer";
 import { PlayerRacket } from "./PlayerRacket";
 import { Racket } from "./Racket";
 import { TennisBall } from "./TennisBall";
@@ -17,6 +18,8 @@ export class TennisGame {
 
   private width: number = 0;
   private height: number = 0;
+
+  private renderer: Fake3dRenderer;
 
   private playerRacket: PlayerRacket;
   private cpuRacket: CPURacket;
@@ -38,6 +41,9 @@ export class TennisGame {
     canvas.addEventListener("mousemove", this.handleMouseMove.bind(this));
     window.addEventListener("resize", this.handleScreenResize.bind(this));
     this.handleScreenResize();
+
+    // init renderer
+    this.renderer = new Fake3dRenderer(this.width, this.height);
 
     // init
     const { playerRacket, cpuRacket, ball, tennisCourt } =
@@ -127,16 +133,16 @@ export class TennisGame {
 
     // begin the rendering
     this.context.clearRect(0, 0, this.width, this.height);
-    this.context.fillStyle = "#FFF";
+    this.context.fillStyle = "#1B2420";
     this.context.fillRect(0, 0, this.width, this.height);
 
     // render the tennis court
-    this.tennisCourt.render(this.context);
+    this.tennisCourt.render(this.context, this.renderer);
 
     // render the racket
-    this.cpuRacket.render(this.context);
-    this.ball.render(this.context);
-    this.playerRacket.render(this.context);
+    this.cpuRacket.render(this.context, this.renderer);
+    this.ball.render(this.context, this.renderer);
+    this.playerRacket.render(this.context, this.renderer);
 
     this.animFrame = requestAnimationFrame(this.update.bind(this));
   }
@@ -153,55 +159,3 @@ export class TennisGame {
     cancelAnimationFrame(this.animFrame);
   }
 }
-
-export function fake3dTransform(
-  ctx: CanvasRenderingContext2D,
-  position: Vector2D,
-  elevation: number,
-  draw: () => void
-) {
-  // const tiltFactor = 0.99;
-  // const height = 600;
-  const foreShorteningScaleFactor = (position.y + 700) * 0.002;
-  const renderingScale = 0.3;
-
-  const elevationHeightFactor = 0.3;
-  const yScaleCompress = 0.4;
-
-  const viewportWidth = 1000;
-  const viewportHeight = 600;
-
-  // const yOriginOffset = viewportHeight * 0.2;
-  const yOriginOffset = 100;
-  const yOriginOffsetPostTransform = 300;
-
-  ctx.save();
-  // easy draw
-  // ctx.translate(position.x, position.y);
-
-  // complex draw
-  ctx.translate(
-    0,
-    -elevation * foreShorteningScaleFactor * elevationHeightFactor
-  );
-
-  ctx.translate(
-    (viewportWidth / 2) * (1 - foreShorteningScaleFactor * renderingScale) +
-      position.x * foreShorteningScaleFactor * renderingScale,
-    yOriginOffset
-  );
-
-  ctx.translate(
-    0,
-    position.y * yScaleCompress * foreShorteningScaleFactor * renderingScale
-  );
-  ctx.scale(foreShorteningScaleFactor, foreShorteningScaleFactor);
-  ctx.scale(renderingScale, renderingScale);
-
-  draw();
-  ctx.restore();
-}
-
-// export function getPointAndScale3D(position: Vector2D, elevation: number) {
-//   return {};
-// }

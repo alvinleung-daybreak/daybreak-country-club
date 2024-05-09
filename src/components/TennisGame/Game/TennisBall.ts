@@ -1,12 +1,13 @@
 import { AssetManager } from "./AssetManager/AssetManager";
 import { AudioAsset } from "./AssetManager/AudioAsset";
 import { CPURacket } from "./CPURacket";
+import { Fake3dRenderer } from "./Fake3dRenderer";
 import Matrix2D from "./Matrix2D";
 import { PlayerRacket } from "./PlayerRacket";
 import { Racket } from "./Racket";
 import { SoundEffect } from "./SoundEffect";
 import { TennisCourt } from "./TennisCourt";
-import { WinStateHandler, fake3dTransform } from "./TennisGame";
+import { WinStateHandler } from "./TennisGame";
 import Vector2D from "./Vector2D";
 import { constrain, map } from "./utils";
 
@@ -26,7 +27,7 @@ export class TennisBall {
   private lastCpuHit = 0;
   private cpuHitCooldown = 500;
 
-  private color = "#1B2420";
+  private color = "#D4FF00";
 
   private smashThreshold = 8;
 
@@ -353,11 +354,11 @@ export class TennisBall {
     return false;
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render(ctx: CanvasRenderingContext2D, renderer: Fake3dRenderer) {
     // ctx.rect(this.position.x, this.position.y, this.size, this.size);
     ctx.fillText(`${this.position.x}`, 50, 50);
 
-    fake3dTransform(ctx, this.position, 0, () => {
+    renderer.fake3dTransform(ctx, this.position, 0, () => {
       // shadow
       ctx.fillStyle = "rgba(0,0,0,.2)";
       ctx.beginPath();
@@ -370,7 +371,7 @@ export class TennisBall {
       // ctx.fillText(`${Math.floor(this.elevation)}`, 10, 10);
     });
 
-    fake3dTransform(ctx, this.position, this.elevation, () => {
+    renderer.fake3dTransform(ctx, this.position, this.elevation, () => {
       // ball
       // ctx.fillStyle = "#D4FF00";
       ctx.fillStyle = this.color;

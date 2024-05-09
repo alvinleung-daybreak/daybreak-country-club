@@ -1,8 +1,8 @@
 import { AssetManager } from "./AssetManager/AssetManager";
 import { ImageAsset } from "./AssetManager/ImageAsset";
+import { Fake3dRenderer } from "./Fake3dRenderer";
 import { TennisBall } from "./TennisBall";
 import { TennisCourt } from "./TennisCourt";
-import { fake3dTransform } from "./TennisGame";
 import Vector2D from "./Vector2D";
 import { constrain, map } from "./utils";
 
@@ -77,15 +77,15 @@ export class Racket {
     );
   }
 
-  public render(ctx: CanvasRenderingContext2D) {
+  public render(ctx: CanvasRenderingContext2D, renderer: Fake3dRenderer) {
     const halfWidth = this.width / 2;
-    fake3dTransform(ctx, this.position, 0, () => {
+    renderer.fake3dTransform(ctx, this.position, 0, () => {
       //shadow
       ctx.fillStyle = "rgba(0,0,0,.2)";
       ctx.fillRect(-halfWidth, 0, this.width, 2);
     });
 
-    fake3dTransform(ctx, this.position, this.elevation, () => {
+    renderer.fake3dTransform(ctx, this.position, this.elevation, () => {
       ctx.fillStyle = this.color;
 
       // for debug
