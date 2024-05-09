@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
             throw "Product not found in database, abort adding to purchase record";
           }
 
+          // add purchase record to the system
           await prisma.purchaseRecord.create({
             data: {
               receiptEmail: email,
@@ -67,6 +68,8 @@ export async function POST(req: NextRequest) {
               },
             },
           });
+
+          // decrement the product in stock
           await prisma.product.update({
             where: {
               id: prismaProduct.id,
@@ -77,6 +80,14 @@ export async function POST(req: NextRequest) {
               },
             },
           });
+
+          // make the product unavailable on stripe when
+          // the last one is being sold
+          if (prismaProduct.stock === 1) {
+            await stripe.products.update(prismaProduct.stripeProductId, {
+              active: false,
+            });
+          }
         } catch (e) {
           console.log(e);
         }
