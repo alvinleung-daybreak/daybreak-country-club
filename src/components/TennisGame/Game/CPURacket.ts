@@ -10,19 +10,19 @@ export class CPURacket extends Racket {
   private maxMovementSpeed = 0;
   private responseTimeFactor = 1;
 
-  private isPlaying = true;
-
-  constructor() {
+  constructor(initialPosition: Vector2D) {
     super();
     this.setColor("#FF9F00");
+    this.setPosition(initialPosition);
   }
 
   public update(
     tennisCourt: TennisCourt,
     tennisBall: TennisBall,
-    player: PlayerRacket
+    player: PlayerRacket,
+    hasWinner: boolean
   ) {
-    if (!this.isPlaying) return;
+    if (hasWinner) return;
 
     const { top } = tennisCourt.getEdges();
     const halfCourtHeight = tennisCourt.getDimension().height / 2;
@@ -103,12 +103,5 @@ export class CPURacket extends Racket {
         netDirectionCorrectionFactor
     );
     this.setSwingVelocity(new Vector2D(0, randomHitRange));
-  }
-
-  public stopPlaying() {
-    this.isPlaying = false;
-  }
-  public beginPlaying() {
-    this.isPlaying = true;
   }
 }

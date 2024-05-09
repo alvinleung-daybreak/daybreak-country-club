@@ -1,10 +1,12 @@
 import { AssetManager } from "./AssetManager/AssetManager";
 import { AudioAsset } from "./AssetManager/AudioAsset";
+import { CPURacket } from "./CPURacket";
 import Matrix2D from "./Matrix2D";
+import { PlayerRacket } from "./PlayerRacket";
 import { Racket } from "./Racket";
 import { SoundEffect } from "./SoundEffect";
 import { TennisCourt } from "./TennisCourt";
-import { fake3dTransform } from "./TennisGame";
+import { WinStateHandler, fake3dTransform } from "./TennisGame";
 import Vector2D from "./Vector2D";
 import { constrain, map } from "./utils";
 
@@ -36,9 +38,19 @@ export class TennisBall {
   private hasBounced: boolean = false;
   private peakElevation: number = 0;
 
-  constructor(initialPosition: Vector2D, initialVelocity: Vector2D) {
+  private currentTurn: Racket;
+
+  constructor(
+    initialPosition: Vector2D,
+    initialVelocity: Vector2D,
+    initialVertAccel: number,
+    initialTurn: Racket
+  ) {
     this.velocity = initialVelocity;
     this.position = initialPosition;
+    this.vertAccel = initialVertAccel;
+
+    this.currentTurn = initialTurn;
 
     // setup sounds
     const assets = AssetManager.getInstance();
@@ -124,12 +136,65 @@ export class TennisBall {
     return false;
   }
 
+  /**
+   * cehck which side the ball lands on, if
+   * @param tennisCourt
+   * @returns
+   */
+  private checkBouncedCourtSide(tennisCourt: TennisCourt) {
+    const { top, bottom } = tennisCourt.getEdges();
+    const tennisCourtCenter = (top + bottom) / 2;
+    if (this.position.y > tennisCourtCenter) {
+      return -1;
+    }
+    return 1;
+  }
+
+  private onBouncedAgainstGround(
+    tennisCourt: TennisCourt,
+    player: Racket,
+    cpuRacket: Racket,
+    onWin: WinStateHandler
+  ) {
+    if (this.checkIsOut(tennisCourt)) {
+      if (this.hasBounced) {
+        onWin(this.currentTurn === player ? cpuRacket : player);
+      } else {
+        onWin(this.currentTurn === player ? player : cpuRacket);
+      }
+    }
+
+    // bounce on player's own court
+    if (
+      this.checkBouncedCourtSide(tennisCourt) < 0 &&
+      this.currentTurn === cpuRacket
+    ) {
+      onWin(cpuRacket);
+    }
+    // bounce on cpu's own court
+    if (
+      this.checkBouncedCourtSide(tennisCourt) > 0 &&
+      this.currentTurn === player
+    ) {
+      onWin(player);
+    }
+  }
+
+  private onBouncedAgainstNet(
+    player: Racket,
+    cpuRacket: Racket,
+    onWin: WinStateHandler
+  ) {
+    onWin(this.currentTurn === player ? player : cpuRacket);
+  }
+
   update(
     t: number,
     player: Racket,
     cpuRacket: Racket,
     tennisCourt: TennisCourt,
-    onWin: (racket: Racket) => void
+    onWin: WinStateHandler,
+    hasWinner: boolean
   ) {
     // step the ball position
     this.vertAccel += this.gravity;
@@ -137,10 +202,9 @@ export class TennisBall {
 
     // create an impulse for bouncing up
     if (this.elevation <= 0) {
+      this.onBouncedAgainstGround(tennisCourt, player, cpuRacket, onWin);
       this.vertAccel *= -this.groundBounciness;
       this.hasBounced = true;
-
-      if (this.checkIsOut(tennisCourt)) onWin(player);
     }
 
     // record how how high the ball has hit
@@ -161,45 +225,54 @@ export class TennisBall {
     ) {
       // the ball is hitting the net
       this.velocity.y = -this.velocity.y;
+
+      // the other player win when it hits the net
+      this.onBouncedAgainstNet(player, cpuRacket, onWin);
     }
 
-    // check if hit player position
-    const canPlayerHit = t - this.lastPlayerHit > this.playerHitCooldown;
-    const canCpuHit = t - this.lastCpuHit > this.cpuHitCooldown;
+    // allow detection as long as the game is playing
+    if (!hasWinner) {
+      // check if hit player position
+      const canPlayerHit = t - this.lastPlayerHit > this.playerHitCooldown;
+      const canCpuHit = t - this.lastCpuHit > this.cpuHitCooldown;
 
-    if (canPlayerHit) {
-      this.color = "#1B2420";
-    } else {
-      this.color = "#1BF420";
-    }
+      // if (canPlayerHit) {
+      //   this.color = "#1B2420";
+      // } else {
+      //   this.color = "#1BF420";
+      // }
 
-    if (canPlayerHit && this.hitTestWithRacket(player)) {
-      this.hasBounced = false; // reset bounce hit
-      this.peakElevation = 0; // reset peak elevation after hit
+      if (canPlayerHit && this.hitTestWithRacket(player)) {
+        this.hasBounced = false; // reset bounce hit
+        this.peakElevation = 0; // reset peak elevation after hit
+        this.currentTurn = cpuRacket; // switch turn after hit
 
-      this.lastPlayerHit = t;
-      const isStrike = this.resolveRacketCollision(player);
-      if (isStrike) {
-        this.strikeSoundEffeect.trigger();
-      } else {
-        this.hitSoundEffects.trigger();
+        this.lastPlayerHit = t;
+        const isSmash = this.resolveRacketCollision(player);
+        if (isSmash) {
+          this.strikeSoundEffeect.trigger();
+        } else {
+          this.hitSoundEffects.trigger();
+        }
       }
-    }
 
-    if (canCpuHit && this.hitTestWithRacket(cpuRacket)) {
-      this.hasBounced = false; // reset bounce hit
-      this.peakElevation = 0; // reset peak elevation after hit
+      if (canCpuHit && this.hitTestWithRacket(cpuRacket)) {
+        this.hasBounced = false; // reset bounce hit
+        this.peakElevation = 0; // reset peak elevation after hit
+        this.currentTurn = player; // switch turn after hit
 
-      this.lastCpuHit = t;
-      const isStrike = this.resolveRacketCollision(cpuRacket);
-      if (isStrike) {
-        this.strikeSoundEffeect.trigger();
-      } else {
-        this.hitSoundEffects.trigger();
+        this.lastCpuHit = t;
+        const isSmash = this.resolveRacketCollision(cpuRacket);
+        if (isSmash) {
+          this.strikeSoundEffeect.trigger();
+        } else {
+          this.hitSoundEffects.trigger();
+        }
       }
     }
     // update the ball position
-    this.position = Vector2D.add(this.position, this.velocity);
+    if (this.position.y > -600)
+      this.position = Vector2D.add(this.position, this.velocity);
   }
 
   /**
@@ -263,6 +336,23 @@ export class TennisBall {
     return isSmash;
   }
 
+  private hitTestWithRacket(racket: Racket): boolean {
+    // hit test
+    const racketWidth = racket.getWidth();
+    const racketPos = racket.getPosition();
+
+    const racketLeftEdge = racketPos.x - racketWidth / 2;
+    const racketRightEdge = racketPos.x + racketWidth / 2;
+
+    if (this.position.x < racketLeftEdge || this.position.x > racketRightEdge) {
+      return false;
+    }
+    if (Math.abs(this.position.y - racketPos.y) < 30) {
+      return true;
+    }
+    return false;
+  }
+
   render(ctx: CanvasRenderingContext2D) {
     // ctx.rect(this.position.x, this.position.y, this.size, this.size);
     ctx.fillText(`${this.position.x}`, 50, 50);
@@ -288,22 +378,5 @@ export class TennisBall {
       ctx.arc(0, 0, this.size, 0, 2 * Math.PI);
       ctx.fill();
     });
-  }
-
-  private hitTestWithRacket(racket: Racket): boolean {
-    // hit test
-    const racketWidth = racket.getWidth();
-    const racketPos = racket.getPosition();
-
-    const racketLeftEdge = racketPos.x - racketWidth / 2;
-    const racketRightEdge = racketPos.x + racketWidth / 2;
-
-    if (this.position.x < racketLeftEdge || this.position.x > racketRightEdge) {
-      return false;
-    }
-    if (Math.abs(this.position.y - racketPos.y) < 30) {
-      return true;
-    }
-    return false;
   }
 }

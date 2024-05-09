@@ -7,6 +7,8 @@ import { TennisBall } from "./TennisBall";
 import { TennisCourt } from "./TennisCourt";
 import Vector2D from "./Vector2D";
 
+export type WinStateHandler = (racket: Racket) => void;
+
 export class TennisGame {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -60,16 +62,25 @@ export class TennisGame {
     );
 
     const playerRacket = new PlayerRacket();
-    const cpuRacket = new CPURacket();
+    const cpuRacket = new CPURacket(
+      new Vector2D(courtWidth / 2 + tennisCourt.getEdges().left, 0)
+    );
     const ball = new TennisBall(
       new Vector2D(this.width / 2, tennisCourt.getEdges().top + 50),
-      new Vector2D(Math.random() * 3 - 1, 5)
+      new Vector2D(Math.random() * 3 - 1, 5),
+      1,
+      playerRacket
     );
 
     return { tennisCourt, playerRacket, cpuRacket, ball };
   }
 
   private onWin(racket: Racket) {
+    if (this.winner) {
+      console.log("winner has been decided");
+      return;
+    }
+
     if (racket === this.playerRacket) {
       console.log("player wins");
       this.winner = "player";
@@ -81,19 +92,25 @@ export class TennisGame {
   }
 
   update(t: number) {
+    const hasWinner = this.winner !== undefined;
+
     // update the game logic here
     this.playerRacket.update(this.tennisCourt, this.ball, this.mouse);
+    this.cpuRacket.update(
+      this.tennisCourt,
+      this.ball,
+      this.playerRacket,
+      hasWinner
+    );
 
-    if (this.winner === undefined) {
-      this.cpuRacket.update(this.tennisCourt, this.ball, this.playerRacket);
-      this.ball.update(
-        t,
-        this.playerRacket,
-        this.cpuRacket,
-        this.tennisCourt,
-        this.onWin.bind(this)
-      );
-    }
+    this.ball.update(
+      t,
+      this.playerRacket,
+      this.cpuRacket,
+      this.tennisCourt,
+      this.onWin.bind(this),
+      hasWinner
+    );
 
     // begin the rendering
     this.context.clearRect(0, 0, this.width, this.height);
