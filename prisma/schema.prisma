@@ -10,10 +10,7 @@ datasource db {
 
 model PurchaseRecord {
   id           String   @id @default(uuid())
-  time         DateTime
-  email        String
-  receptUrl    String
-  amountInCent Int
+  receiptEmail String
   createdAt    DateTime
   productId    String?
   product      Product? @relation(fields: [productId], references: [id], onDelete: Cascade)

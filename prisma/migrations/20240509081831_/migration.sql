@@ -1,10 +1,7 @@
 -- CreateTable
 CREATE TABLE "PurchaseRecord" (
     "id" TEXT NOT NULL,
-    "time" TIMESTAMP(3) NOT NULL,
-    "email" TEXT NOT NULL,
-    "receptUrl" TEXT NOT NULL,
-    "amountInCent" INTEGER NOT NULL,
+    "receiptEmail" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "productId" TEXT,
 
