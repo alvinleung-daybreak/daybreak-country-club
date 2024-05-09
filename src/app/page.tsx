@@ -5,6 +5,7 @@ import CountryClubNav from "@/components/CountryClubNav/CountryClubNav";
 import ProductGallery from "@/components/ProductGallery/ProductGallery";
 import ProductInfoPanel from "@/components/ProductInfoPanel/ProductInfoPanel";
 import StackGallery from "@/components/StackGallery/StackGallery";
+import TennisGameComponent from "@/components/TennisGame/TennisGameComponent";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -145,6 +146,10 @@ export default function Home() {
               </p>
             </div>
             <BackdropGallery images={backdropImages} />
+          </section>
+
+          <section className="flex flex-row justify-center my-24">
+            <TennisGameComponent />
           </section>
         </div>
       </motion.main>

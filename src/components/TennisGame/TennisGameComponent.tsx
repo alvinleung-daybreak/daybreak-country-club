@@ -5,6 +5,7 @@ import { TennisGame } from "./Game/TennisGame";
 import { AssetManager } from "./Game/AssetManager/AssetManager";
 import { ImageAsset } from "./Game/AssetManager/ImageAsset";
 import { AudioAsset } from "./Game/AssetManager/AudioAsset";
+import TennisGameBadge from "./TennisGameBadge";
 
 type Props = {};
 
@@ -24,15 +25,24 @@ const TennisGameComponent = (props: Props) => {
 
   const [isGameLoading, setIsGameLoading] = useState(true);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [winner, setWinner] = useState<string | undefined>(undefined);
+  const [reason, setWinningReason] = useState<string>("");
 
   const gameRef = useRef<TennisGame>();
+
+  const handleWin = (winner: string, reason: string) => {
+    setWinner(winner);
+    setWinningReason(reason);
+  };
+
   const handleGameClick = () => {
     setIsGameStarted(true);
+    setWinner(undefined);
 
     if (gameRef.current) {
       gameRef.current.destory();
     }
-    gameRef.current = new TennisGame(canvasRef.current);
+    gameRef.current = new TennisGame(canvasRef.current, handleWin);
   };
 
   useEffect(() => {
@@ -76,6 +86,9 @@ const TennisGameComponent = (props: Props) => {
       setIsGameLoading(true);
       await assets.loadAll();
       setIsGameLoading(false);
+
+      // init a game first
+      gameRef.current = new TennisGame(canvasRef.current, handleWin);
     };
     initGame();
 
@@ -83,19 +96,33 @@ const TennisGameComponent = (props: Props) => {
   }, []);
 
   return (
-    <div onClick={handleGameClick} className="relative ">
-      <canvas
-        ref={canvasRef}
-        width={1000}
-        height={600}
-        className="cursor-none"
-      />
-      {isGameLoading && "loading..."}
-      {!isGameStarted && !isGameLoading && (
-        <div className="absolute inset-0 flex align-center justify-center h-full">
-          Click anywhere to start
+    <div className="relative w-full max-w-[130vh] mx-4 md:mx-12">
+      <div
+        onClick={handleGameClick}
+        className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px]"
+      >
+        <canvas
+          ref={canvasRef}
+          width={1000}
+          height={600}
+          className="w-full h-fit"
+          style={{
+            cursor: isGameStarted ? "none" : "default",
+          }}
+        />
+        {isGameLoading && "loading..."}
+        {!isGameStarted && !isGameLoading && (
+          <div className="absolute inset-0 flex align-center justify-center h-full">
+            Click anywhere to start
+          </div>
+        )}
+        <div className="absolute inset-4 bg-transparent border border-chalk-white pointer-events-none rounded-[22px]"></div>
+      </div>
+      <div className="absolute -top-24 left-0 right-0 flex flex-row">
+        <div className="w-[20vw] min-w-48 max-w-72 flex mx-auto">
+          <TennisGameBadge />
         </div>
-      )}
+      </div>
     </div>
   );
 };

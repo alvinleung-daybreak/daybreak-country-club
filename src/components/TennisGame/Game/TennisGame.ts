@@ -1,3 +1,4 @@
+import { m } from "framer-motion";
 import { AssetManager } from "./AssetManager/AssetManager";
 import { AudioAsset } from "./AssetManager/AudioAsset";
 import { CPURacket } from "./CPURacket";
@@ -9,6 +10,7 @@ import { TennisCourt } from "./TennisCourt";
 import Vector2D from "./Vector2D";
 
 export type WinStateHandler = (racket: Racket, reason: string) => void;
+export type GameResultHandler = (winner: string, reason: string) => void;
 
 export class TennisGame {
   private canvas: HTMLCanvasElement;
@@ -30,16 +32,27 @@ export class TennisGame {
 
   // private cpu: PlayerRacket = new PlayerRacket();
 
-  private boundingClientRectWidth = 0;
-  private boundingClientRectHeight = 0;
+  private boundingClientRect = {
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: 0,
+    height: 0,
+  };
 
-  constructor(canvas: HTMLCanvasElement) {
+  private gameResultHandler: GameResultHandler;
+
+  constructor(canvas: HTMLCanvasElement, gameResultHandler: GameResultHandler) {
     this.canvas = canvas;
     this.resize(this.canvas.width, this.canvas.height);
 
+    this.gameResultHandler = gameResultHandler;
+
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    canvas.addEventListener("mousemove", this.handleMouseMove.bind(this));
+    canvas.addEventListener("pointermove", this.handleMouseMove.bind(this));
     window.addEventListener("resize", this.handleScreenResize.bind(this));
+    window.addEventListener("scroll", this.handleScroll.bind(this));
     this.handleScreenResize();
 
     // init renderer
@@ -61,13 +74,21 @@ export class TennisGame {
   }
 
   handleMouseMove(e: MouseEvent) {
-    this.mouse.x = e.clientX / this.boundingClientRectWidth;
-    this.mouse.y = e.clientY / this.boundingClientRectHeight;
+    this.mouse.x =
+      (e.clientX - this.boundingClientRect.left) /
+      this.boundingClientRect.width;
+    this.mouse.y =
+      (e.clientY - this.boundingClientRect.top) /
+      this.boundingClientRect.height;
   }
   handleScreenResize() {
     const bounds = this.canvas.getBoundingClientRect();
-    this.boundingClientRectHeight = bounds.height;
-    this.boundingClientRectWidth = bounds.width;
+    this.boundingClientRect = bounds;
+  }
+
+  handleScroll() {
+    const bounds = this.canvas.getBoundingClientRect();
+    this.boundingClientRect = bounds;
   }
 
   private getInitialGameStates() {
@@ -108,6 +129,8 @@ export class TennisGame {
       console.log("cpu wins");
       this.winner = "cpu";
     }
+
+    this.gameResultHandler(this.winner as string, reason);
   }
 
   update(t: number) {
@@ -154,8 +177,9 @@ export class TennisGame {
     this.height = height;
   }
   destory() {
-    this.canvas.removeEventListener("mousemove", this.handleMouseMove);
+    this.canvas.removeEventListener("pointermove", this.handleMouseMove);
     window.removeEventListener("resize", this.handleScreenResize);
+    window.removeEventListener("scroll", this.handleScroll);
     cancelAnimationFrame(this.animFrame);
   }
 }
