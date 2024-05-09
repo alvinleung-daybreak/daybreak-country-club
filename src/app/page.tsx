@@ -93,13 +93,13 @@ export default async function Home() {
               Country club photoshoot & ephemera
             </h2>
             <div className="flex flex-col md:flex-row max-w-[70ch] text-justify gap-4 mx-4">
-              <p className="font-sans-sm">
+              <p className="font-sans-sm max-w-[34ch]">
                 As the project unfolded over time and expanded beyond the
                 initial commemorative sweatshirt, we ended up art directing
                 amx-4 photoshoot in our very own studio as well as creating and
                 amassing a variety of Country Club artefacts.
               </p>
-              <p className="font-sans-sm">
+              <p className="font-sans-sm max-w-[34ch]">
                 Take an inside look into the behind-the-scenes of our Country
                 Club campaign—from sourcing props like our vintage tennis
                 racquets and ball hopper to designing custom clothing tags,
@@ -115,14 +115,14 @@ export default async function Home() {
             <h2 className="font-country-script-display mb-12">
               The making of our backdrop
             </h2>
-            <div className="flex flex-col md:flex-row max-w-[70ch] text-justify gap-4 mx-4">
-              <p className="font-sans-sm">
+            <div className="flex flex-col md:flex-row text-justify gap-4 mx-4">
+              <p className="font-sans-sm max-w-[34ch]">
                 Setting the scene for our photoshoot, our backdrop was the
                 result of thorough historical research and AI image-making with
                 Midjourney to achieve the exact country club atmosphere we had
                 in mind.
               </p>
-              <p className="font-sans-sm">
+              <p className="font-sans-sm max-w-[34ch]">
                 The final imagery references the West Side Tennis Club located
                 in Queens, New York—the historical site of the first 60 editions
                 of the U.S. Open held between 1915 and 1977.
