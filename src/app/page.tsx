@@ -96,7 +96,7 @@ export default function Home() {
       >
         <section className="grid md:grid-cols-2 mx-4 md:mx-12 border-l border-r md:divide-x">
           <ProductGallery images={productImages} />
-          <div className="md:sticky md:top-0 flex py md:items-center justify-center md:max-h-screen">
+          <div className="md:sticky md:top-16 flex py-12 md:items-center justify-center md:max-h-screen">
             <ProductInfoPanel />
           </div>
         </section>
