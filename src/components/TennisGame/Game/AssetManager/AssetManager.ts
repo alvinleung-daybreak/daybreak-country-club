@@ -33,6 +33,19 @@ export class AssetManager {
 
     return result;
   }
+
+  findAll<T extends Asset>(
+    filterFunction: (id: string, asset: Asset) => boolean
+  ): { [key: string]: T } {
+    const results: { [key: string]: T } = {};
+    Object.entries(this.assetLookup).forEach(([id, asset]) => {
+      if (filterFunction(id, asset)) {
+        results[id] = asset as T;
+      }
+    });
+    return results;
+  }
+
   async loadAll() {
     console.log("loading assets...");
 

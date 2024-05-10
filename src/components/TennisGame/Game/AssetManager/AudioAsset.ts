@@ -1,4 +1,27 @@
-import { Asset } from "./AssetManager";
+import { Asset, AssetManager } from "./AssetManager";
+
+export class AudioController {
+  public static mute() {
+    // go through all audio asset and mute all
+    const assets = AssetManager.getInstance();
+    const allAudio = assets.findAll<AudioAsset>((id, asset) => {
+      return asset instanceof AudioAsset;
+    });
+    Object.entries(allAudio).map(([id, audio]) => {
+      audio.mute();
+    });
+  }
+
+  public static unmute() {
+    const assets = AssetManager.getInstance();
+    const allAudio = assets.findAll<AudioAsset>((id, asset) => {
+      return asset instanceof AudioAsset;
+    });
+    Object.entries(allAudio).map(([id, audio]) => {
+      audio.unmute();
+    });
+  }
+}
 
 export class AudioAsset implements Asset {
   private _isloaded = false;
@@ -6,12 +29,25 @@ export class AudioAsset implements Asset {
   private src: string;
   private audio = new Audio();
 
+  private isMuted = false;
+
   constructor(src: string) {
     this.src = src;
   }
   isLoading(): boolean {
     return this._isLoading;
   }
+
+  public mute() {
+    this.isMuted = true;
+    this.audio.volume = 0;
+  }
+
+  public unmute() {
+    this.isMuted = false;
+    this.audio.volume = 1;
+  }
+
   public getAudio() {
     return this.audio;
   }

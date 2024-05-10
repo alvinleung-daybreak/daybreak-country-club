@@ -181,5 +181,7 @@ export class TennisGame {
     window.removeEventListener("resize", this.handleScreenResize);
     window.removeEventListener("scroll", this.handleScroll);
     cancelAnimationFrame(this.animFrame);
+
+    AssetManager.getInstance().get<AudioAsset>("ambience-combined").stop();
   }
 }
