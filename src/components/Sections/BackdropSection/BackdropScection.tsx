@@ -32,7 +32,7 @@ const BackdropScection = (props: Props) => {
   });
 
   return (
-    <section className="flex flex-col items-center my-24 " ref={containerRef}>
+    <section className="flex flex-col items-center my-24" ref={containerRef}>
       <div className="mb-12">
         <Crown />
       </div>

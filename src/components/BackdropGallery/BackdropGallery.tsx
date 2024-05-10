@@ -24,7 +24,7 @@ const BackdropGallery = ({ images }: Props) => {
   const isInView = useInView(containerRef, { amount: 0.2 });
 
   return (
-    <div className="my-12 flex flex-col gap-8" ref={containerRef}>
+    <div className="my-12 flex flex-col gap-8 mx-4" ref={containerRef}>
       <div className="relative overflow-hidden">
         {images.map((img, index) => {
           return (
