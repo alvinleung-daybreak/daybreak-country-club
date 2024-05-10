@@ -40,8 +40,8 @@ const StackGallery = ({ images }: Props) => {
       ref={containerRef}
       className="relative overflow-hidden mt-12 pt-12 pb-20 w-full max-w-[48rem] flex justify-center overflow-x-hidden"
     >
-      <div className="w-[10%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-40 left-0 top-0 bottom-0" />
-      <div className="w-[10%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-40 right-0 top-0 bottom-0" />
+      <div className="w-[10%] h-full absolute bg-gradient-to-r from-chalk-white to-transparent z-30 left-0 top-0 bottom-0" />
+      <div className="w-[10%] h-full absolute bg-gradient-to-l from-chalk-white to-transparent z-30 right-0 top-0 bottom-0" />
       <div className="relative">
         {images.map((img, index) => {
           return (
@@ -179,7 +179,7 @@ const StackGallerySlide = ({
         rotateZ,
         scale: isDragging ? 1.05 : 1,
         transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1)",
-        zIndex: 30 - index,
+        zIndex: 29 - index,
         cursor: "grab",
       }}
       whileTap={{

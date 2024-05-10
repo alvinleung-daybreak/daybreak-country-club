@@ -2,6 +2,7 @@ import { AnimationConfig } from "@/components/AnimationConfig";
 import StackGallery from "@/components/StackGallery/StackGallery";
 import { motion, useInView } from "framer-motion";
 import React, { MutableRefObject, useRef } from "react";
+import Image from "next/image";
 
 type Props = {};
 
@@ -44,7 +45,10 @@ const BTSSection = (props: Props) => {
   });
 
   return (
-    <section className="flex flex-col items-center my-24" ref={containerRef}>
+    <section
+      className="relative flex flex-col items-center my-24"
+      ref={containerRef}
+    >
       <motion.small
         className="font-country-sans-sm mb-6"
         initial={{ opacity: 0 }}
@@ -69,7 +73,7 @@ const BTSSection = (props: Props) => {
           },
         }}
       >
-        Country club photoshoot & ephemera
+        Photoshoot & ephemera
       </motion.h2>
       <div className="flex flex-col md:flex-row max-w-[70ch] text-justify gap-4 mx-4">
         <motion.p
@@ -105,6 +109,30 @@ const BTSSection = (props: Props) => {
           rubber-stamped logos.
         </motion.p>
       </div>
+      <motion.div className="hidden xl:block absolute bottom-4 left-12 scale-50 rotate-45 z-40">
+        <Image
+          src="/country-club/dcc-stamp-logo 1.png"
+          width={380}
+          height={370}
+          alt={""}
+        />
+      </motion.div>
+      <motion.div className="hidden xl:block absolute top-4 right-4 scale-50 rotate-12 z-40">
+        <Image
+          src="/country-club/dcc-wax-seal 1.png"
+          width={380}
+          height={370}
+          alt={""}
+        />
+      </motion.div>
+      <motion.div className="hidden xl:block absolute top-[0%] -left-[400px] scale-[.4] rotate-6 z-40">
+        <Image
+          src="/country-club/dcc-clothing-tag 1.png"
+          width={1031}
+          height={627}
+          alt={""}
+        />
+      </motion.div>
       <StackGallery images={btsImages} />
     </section>
   );
