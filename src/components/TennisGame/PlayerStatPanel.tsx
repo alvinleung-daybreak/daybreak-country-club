@@ -36,34 +36,32 @@ const PlayerStatPanel = ({ isGameStarted }: Props) => {
   }, [isGameStarted]);
 
   return (
-    <>
-      <RibbonLeft />
-      <RibbonRight />
-      <motion.div
-        className="relative bg-[#134F34] text-chalk-white px-2 py-1 border border-black divide-y divide-black flex flex-col z-20 shadow-lg"
-        animate={{
-          opacity: randomPlayer ? 1 : 0,
-        }}
-      >
-        <div className="flex flex-row pb-1">
-          <div className="font-country-sans-sm mr-3 w-6">P1</div>
-          <div className="font-country-sans-sm">You</div>
-        </div>
-        <div className="flex flex-row pt-1">
-          <div className="font-country-sans-sm mr-3 w-6">P2</div>
-          <div>
-            {randomPlayer && (
+    randomPlayer && (
+      <>
+        <RibbonLeft />
+        <RibbonRight />
+        <motion.div
+          className="relative bg-[#134F34] text-chalk-white px-2 py-1 border border-black divide-y divide-black flex flex-col z-20 shadow-lg"
+          animate={{
+            opacity: randomPlayer ? 1 : 0,
+          }}
+        >
+          <div className="flex flex-row pb-1">
+            <div className="font-country-sans-sm mr-3 w-6">P1</div>
+            <div className="font-country-sans-sm">You</div>
+          </div>
+          <div className="flex flex-row pt-1">
+            <div className="font-country-sans-sm mr-3 w-6">P2</div>
+            <div>
               <div className="font-country-sans-sm">{randomPlayer.name}</div>
-            )}
-            {randomPlayer && (
               <div className="font-sans-xs opacity-50">
                 {randomPlayer.title}
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </>
+        </motion.div>
+      </>
+    )
   );
 };
 
