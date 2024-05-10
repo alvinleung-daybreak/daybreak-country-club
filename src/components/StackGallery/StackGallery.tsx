@@ -4,23 +4,16 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ImageInfo } from "../ProductGallery/ProductGallery";
 import {
-  clamp,
   motion,
-  useDragControls,
   useInView,
   useMotionValue,
   useMotionValueEvent,
   useTransform,
 } from "framer-motion";
 import { useRandom } from "@/hooks/useRandom";
-import { useBounds, useViewportBounds } from "@/hooks/useBounds";
-import {
-  usePointerOffset,
-  usePointerOffsetNormalized,
-  usePointerPosition,
-} from "@/hooks/usePointerInfo";
+import { useViewportBounds } from "@/hooks/useBounds";
 import { useInactiveMotionValue } from "@/hooks/useInactiveMotionValue";
-import { useDebounceCallback, useEventListener } from "usehooks-ts";
+import { useEventListener } from "usehooks-ts";
 import { useWindowDimension } from "@/hooks/useWindowDimension";
 
 type Props = {
@@ -83,43 +76,32 @@ const StackGallerySlide = ({
 
   const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
   const windowDim = useWindowDimension();
-  const bounds = useViewportBounds(containerRef, []);
-
-  const inView = useInView(containerRef);
   const [isDragging, setIsDragging] = useState(false);
-
-  const wheelOffset = useMotionValue(0);
 
   const DRAG_COMMIT_DIST = 200;
   const isOverDragThreshold = useRef(false);
   const FLICK_THRESHOLD = 100;
   const hasFlickDetected = useRef(false);
 
-  const pointer = usePointerPosition(inView);
   const pointerOffsetX = useMotionValue(0);
 
   const isSlidePastCurrent = currentSlide > index;
 
-  const x = useTransform(
-    [pointer.x, wheelOffset],
-    ([pointerXLatest, wheelOffsetLatest]: any) => {
-      if (isSlidePastCurrent) {
-        return DRAG_COMMIT_DIST * 3 * exitDirection.current;
-      }
+  const pointerInitialX = useMotionValue(0);
 
-      if (wheelOffset.get() !== 0) {
-        return wheelOffsetLatest;
-      }
-
-      if (isDragging) {
-        return pointerXLatest + pointerOffsetX.get() - bounds.x;
-      }
-      return 0;
+  const x = useTransform(pointerOffsetX, (pointerXLatest: any) => {
+    if (isSlidePastCurrent) {
+      return DRAG_COMMIT_DIST * 3 * exitDirection.current;
     }
-  );
 
-  useMotionValueEvent(pointer.x, "change", (latest) => {
-    if (Math.abs(pointer.x.getVelocity()) > FLICK_THRESHOLD) {
+    if (isDragging) {
+      return pointerXLatest;
+    }
+    return 0;
+  });
+
+  useMotionValueEvent(pointerOffsetX, "change", (latest) => {
+    if (Math.abs(pointerOffsetX.getVelocity()) > FLICK_THRESHOLD) {
       hasFlickDetected.current = true;
       return;
     }
@@ -140,10 +122,17 @@ const StackGallerySlide = ({
 
   const handlePointerDown = (e: React.PointerEvent) => {
     setIsDragging(true);
-    const offset = bounds.left - e.clientX;
-    pointerOffsetX.set(offset);
+    // const offset = bounds.left - e.clientX;
+    pointerInitialX.set(e.clientX);
+    pointerOffsetX.set(0);
+
     hasFlickDetected.current = false;
     isOverDragThreshold.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    const offset = e.clientX - pointerInitialX.get();
+    pointerOffsetX.set(offset);
   };
 
   useEventListener("pointerup", () => {
@@ -167,26 +156,15 @@ const StackGallerySlide = ({
     }
   }, [isDragging]);
 
-  const resetOffset = useDebounceCallback(() => {
-    wheelOffset.set(0);
-  }, 500);
-
-  const handleWheel = (e: React.WheelEvent) => {
-    // e.preventDefault();
-    // const newOffsetX = wheelOffset.get() + e.deltaX;
-    // wheelOffset.set(newOffsetX);
-    // resetOffset();
-  };
-
   return (
     <motion.div
       ref={containerRef}
+      onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}
       onClick={() => {
         // if (Math.abs(x.get()) > 5) return;
         // handleNextSlide();
       }}
-      onWheel={handleWheel}
       animate={{
         // opacity: isSlidePastCurrent ? 0 : 1,
         boxShadow: `0px ${isDragging ? "15" : "5"}px ${
@@ -207,9 +185,9 @@ const StackGallerySlide = ({
       whileTap={{
         cursor: "grabbing",
       }}
-      className="top-0 left-0 max-w-96 border-8 border-white "
+      className="top-0 left-0 max-w-96 border-8 border-white touch-pan-y select-none"
     >
-      <motion.div className="drop-shadow-lg pointer-events-none select-none">
+      <motion.div className="drop-shadow-lg pointer-events-none max-w-[60vw]">
         <Image src={src} alt={alt} width={756} height={1008} />
       </motion.div>
     </motion.div>
