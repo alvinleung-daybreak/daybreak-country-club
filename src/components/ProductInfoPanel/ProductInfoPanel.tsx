@@ -51,7 +51,7 @@ const ProductInfoPanel = (props: Props) => {
         Susanna is 5’5” and wearing a size Medium. Dean is 6’1” and wearing a
         size Large
       </small>
-      <div className="font-country-sans-md font-bold mb-14">$160.00</div>
+      <div className="font-country-sans-md font-bold mb-14">$100.00 USD</div>
 
       <ProductForm productInfo={productInfo} />
     </div>
