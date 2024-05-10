@@ -41,9 +41,10 @@ const PlayerStatPanel = ({ isGameStarted }: Props) => {
         <RibbonLeft />
         <RibbonRight />
         <motion.div
-          className="relative bg-[#134F34] text-chalk-white px-2 py-1 border border-black divide-y divide-black flex flex-col z-20 shadow-lg"
+          className="relative bg-[#134F34] text-chalk-white px-2 py-1 border border-black divide-y divide-black flex flex-col z-20"
           animate={{
             opacity: randomPlayer ? 1 : 0,
+            boxShadow: "0px 8px 20px rgba(0,0,0,.4)",
           }}
         >
           <div className="flex flex-row pb-1">
@@ -74,7 +75,7 @@ const RibbonRight = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M64 0H0V52H64L48 26L64 0Z" fill="#134F34" />
+    <path d="M64 0H0V52H64L48 26L64 0Z" fill="#134F34" stroke="#000" />
   </svg>
 );
 
@@ -87,7 +88,7 @@ const RibbonLeft = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M0 0H64V52H0L16 26L0 0Z" fill="#134F34" />
+    <path d="M0 0H64V52H0L16 26L0 0Z" fill="#134F34" stroke="#000" />
   </svg>
 );
 

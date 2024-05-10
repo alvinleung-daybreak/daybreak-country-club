@@ -302,9 +302,22 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             <TennisGameBadge />
           </motion.div>
         </div>
-        <div className="absolute left-16 right-16 md:left-20 md:right-auto top-20 md:top-8">
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: isInView ? 1 : 0,
+            transition: {
+              duration: AnimationConfig.SLOW,
+              ease: AnimationConfig.EASING,
+              delay: 0.4,
+            },
+          }}
+          className="absolute left-16 right-16 md:left-20 md:right-auto top-20 md:top-8"
+        >
           <PlayerStatPanel isGameStarted={isGameStarted} />
-        </div>
+        </motion.div>
       </div>
     </>
   );
