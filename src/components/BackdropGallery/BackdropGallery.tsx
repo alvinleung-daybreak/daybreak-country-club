@@ -24,7 +24,7 @@ const BackdropGallery = ({ images }: Props) => {
   const isInView = useInView(containerRef, { amount: 0.2 });
 
   return (
-    <div className="my-12 flex flex-col gap-8 mx-4" ref={containerRef}>
+    <div className="my-12 flex flex-col gap-8 mx-4 relative" ref={containerRef}>
       <div className="relative overflow-hidden">
         {images.map((img, index) => {
           return (
@@ -76,6 +76,46 @@ const BackdropGallery = ({ images }: Props) => {
           );
         })}
       </div>
+      <motion.div
+        animate={{
+          x: isInView ? 0 : -30,
+          opacity: isInView ? 1 : 0,
+          rotate: isInView ? -12 : -8,
+          transition: {
+            duration: AnimationConfig.VERY_SLOW,
+            ease: AnimationConfig.EASING,
+            delay: 1,
+          },
+        }}
+        className="hidden lg:block absolute top-1/4 -left-12 z-10 -rotate-12 bg-white p-1 shadow-lg"
+      >
+        <Image
+          src="/country-club/backdrop-gallery/bts-left.jpg"
+          alt={""}
+          width={1512 / 8}
+          height={2016 / 8}
+        />
+      </motion.div>
+      <motion.div
+        animate={{
+          x: isInView ? 0 : 30,
+          opacity: isInView ? 1 : 0,
+          rotate: isInView ? 12 : 8,
+          transition: {
+            duration: AnimationConfig.VERY_SLOW,
+            ease: AnimationConfig.EASING,
+            delay: 1.1,
+          },
+        }}
+        className="hidden lg:block absolute top-1/4 -right-12 z-10 rotate-12 bg-white p-1 shadow-lg"
+      >
+        <Image
+          src="/country-club/backdrop-gallery/bts-right.jpg"
+          alt={""}
+          width={1512 / 8}
+          height={2016 / 8}
+        />
+      </motion.div>
     </div>
   );
 };

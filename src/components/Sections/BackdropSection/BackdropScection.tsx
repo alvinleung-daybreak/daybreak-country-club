@@ -2,6 +2,7 @@ import { AnimationConfig } from "@/components/AnimationConfig";
 import BackdropGallery from "@/components/BackdropGallery/BackdropGallery";
 import { motion, useInView } from "framer-motion";
 import React, { MutableRefObject, useRef } from "react";
+import Image from "next/image";
 
 type Props = {};
 
@@ -81,6 +82,7 @@ const BackdropScection = (props: Props) => {
           U.S. Open held between 1915 and 1977.
         </motion.p>
       </div>
+
       <BackdropGallery images={backdropImages} />
     </section>
   );
