@@ -46,6 +46,7 @@ const SizeSelector = ({ onSelect, currentSize, onClick, products }: Props) => {
               className="font-country-sans-sm font-bold cursor-pointer block pb-2 select-none"
               style={{
                 transformOrigin: "bottom center",
+                textDecoration: info.stock !== 0 ? "none" : "line-through",
               }}
               animate={{
                 color: isCurrent ? "#D4FF00" : "#FFFCF2",
