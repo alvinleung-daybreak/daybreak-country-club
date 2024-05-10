@@ -39,7 +39,7 @@ const CountryClubNav = ({
 
   return (
     <>
-      <div className="h-16 border-l border-r mx-12"></div>
+      <div className="h-16 border-l border-r mx-4 md:mx-12"></div>
       <motion.nav
         className="fixed top-0 left-0 right-0 z-50 bg-forest-green"
         initial={{
