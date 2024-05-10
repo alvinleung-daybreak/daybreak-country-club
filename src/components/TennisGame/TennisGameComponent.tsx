@@ -99,16 +99,13 @@ const TennisGameComponent = (props: Props) => {
     <div className="relative w-full max-w-[130vh] mx-4 md:mx-12">
       <div
         onClick={handleGameClick}
-        className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px]"
+        className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
       >
         <canvas
           ref={canvasRef}
           width={1000}
           height={600}
           className="w-full h-fit"
-          style={{
-            cursor: isGameStarted ? "none" : "default",
-          }}
         />
         {isGameLoading && "loading..."}
         {!isGameStarted && !isGameLoading && (

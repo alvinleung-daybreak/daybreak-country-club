@@ -50,7 +50,7 @@ export class TennisGame {
     this.gameResultHandler = gameResultHandler;
 
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    canvas.addEventListener("pointermove", this.handleMouseMove.bind(this));
+    window.addEventListener("pointermove", this.handleMouseMove.bind(this));
     window.addEventListener("resize", this.handleScreenResize.bind(this));
     window.addEventListener("scroll", this.handleScroll.bind(this));
     this.handleScreenResize();
@@ -177,7 +177,7 @@ export class TennisGame {
     this.height = height;
   }
   destory() {
-    this.canvas.removeEventListener("pointermove", this.handleMouseMove);
+    window.removeEventListener("pointermove", this.handleMouseMove);
     window.removeEventListener("resize", this.handleScreenResize);
     window.removeEventListener("scroll", this.handleScroll);
     cancelAnimationFrame(this.animFrame);
