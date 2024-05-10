@@ -228,7 +228,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
                 delay: isGameStarted ? 0 : 0.6,
               },
             }}
-            className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-50 text-chalk-white text-center"
+            className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-50 text-chalk-white text-center px-6"
           >
             <div className="font-country-sans-md">{gameMessageText}</div>
             <div className="font-sans-xs opacity-50">
