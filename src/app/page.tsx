@@ -37,6 +37,18 @@ export default function Home() {
 
   return (
     <>
+      <link rel="icon" href="./DCC_Microsite_Favicon.png" sizes="any" />
+      <meta
+        property="og:image"
+        content="https://daybreakcountry.club//DCC_Microsite_Meta_Image.jpg"
+      />
+      <meta property="og:image:type" content="image/jpg" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta
+        property="og:description"
+        content="For our third-year anniversary, we reimagined Daybreak Studio as a country club in its heyday. Step into the world of Daybreak Country Club."
+      />
       <div
         className="fixed left-0 right-0 bottom-0 top-0 pointer-events-none mix-blend-multiply opacity-30"
         style={{
