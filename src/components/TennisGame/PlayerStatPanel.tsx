@@ -44,7 +44,7 @@ const PlayerStatPanel = ({ isGameStarted }: Props) => {
           className="relative bg-[#134F34] text-chalk-white px-2 py-1 border border-black divide-y divide-black flex flex-col z-20"
           animate={{
             opacity: randomPlayer ? 1 : 0,
-            boxShadow: "0px 8px 20px rgba(0,0,0,.4)",
+            boxShadow: "0px 4px 8px rgba(0,0,0,.3)",
           }}
         >
           <div className="flex flex-row pb-1">
