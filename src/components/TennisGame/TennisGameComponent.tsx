@@ -191,7 +191,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             y: 200,
           }}
           animate={{
-            y: isInView ? 0 : 200,
+            y: isInView ? 0 : 100,
             // rotate: isInView ? 0 : -5,
             transition: {
               duration: AnimationConfig.VERY_SLOW,
@@ -202,6 +202,9 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
           className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
         >
           <motion.canvas
+            animate={{
+              opacity: !isGameStarted && winner === undefined ? 0.3 : 1,
+            }}
             ref={canvasRef}
             width={1000}
             height={600}
@@ -271,7 +274,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             animate={{
               y: isInView ? 0 : 50,
               opacity: isInView ? 1 : 0,
-              // rotate: isInView ? 0 : 30,
+              rotate: isInView ? 0 : 10,
               transition: {
                 duration: AnimationConfig.VERY_SLOW,
                 ease: AnimationConfig.EASING,
