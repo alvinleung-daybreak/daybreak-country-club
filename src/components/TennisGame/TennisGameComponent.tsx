@@ -199,7 +199,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             },
           }}
           onClick={handleGameClick}
-          className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
+          className="relative flex h-[80svh] md:h-auto flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
         >
           <motion.canvas
             animate={{
@@ -208,7 +208,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             ref={canvasRef}
             width={1000}
             height={600}
-            className="w-full h-fit"
+            className="w-full h-fit scale-150 md:scale-100 touch-none"
           />
 
           <motion.div
