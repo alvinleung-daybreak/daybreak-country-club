@@ -180,7 +180,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
           animate={{
             opacity: !isGameStarted ? 1 : 0,
             transition: {
-              delay: isGameStarted ? 0 : 1,
+              delay: isGameStarted ? 0 : 0.6,
             },
           }}
           className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-50 text-chalk-white text-center"
