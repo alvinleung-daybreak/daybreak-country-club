@@ -18,6 +18,7 @@ import useStateRef from "@/hooks/useStateRef";
 
 import Confetti from "react-confetti-boom";
 import { useDebounceCallback } from "usehooks-ts";
+import PlayerStatPanel from "./PlayerStatPanel";
 
 type Props = {
   onEnterGame: () => void;
@@ -296,10 +297,13 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
                 delay: 0.3,
               },
             }}
-            className="w-[20vw] min-w-48 max-w-72 flex mx-auto"
+            className="w-[20vw] min-w-48 max-w-72 flex mx-auto z-40"
           >
             <TennisGameBadge />
           </motion.div>
+        </div>
+        <div className="absolute left-16 right-16 md:right-auto top-16 sm:top-8">
+          <PlayerStatPanel isGameStarted={isGameStarted} />
         </div>
       </div>
     </>
