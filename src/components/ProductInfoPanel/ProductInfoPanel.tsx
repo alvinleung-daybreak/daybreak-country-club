@@ -43,8 +43,8 @@ const ProductInfoPanel = (props: Props) => {
       </p>
       <p className="mb-4">
         In addition to the sweatshirt, your membership bundle will also include
-        the following: a custom Penn-branded collaborative tennis ball, a
-        personalized welcome letter, and your very own membership card.
+        a personalized welcome letter and your very own membership card. Global
+        Shipping Included.
       </p>
 
       <small className="mb-4 font-sans-xs opacity-50 max-w-[30ch]">
