@@ -1,3 +1,5 @@
+"use client";
+
 import TennisGameComponent from "@/components/TennisGame/TennisGameComponent";
 import React from "react";
 
