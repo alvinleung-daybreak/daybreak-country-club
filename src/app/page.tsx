@@ -87,7 +87,6 @@ export default function Home() {
             opacity: isNavExpanded ? 0.2 : 1,
           }}
         >
-          <Divider />
           <footer className=" mx-4 md:mx-12 flex flex-col items-center text-center py-28">
             <div className="mb-8 px-4">
               <SassyDaybreakLogo />
