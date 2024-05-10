@@ -5,6 +5,7 @@ import { CountryClubLogo } from "./CountryClubLogo";
 import { motion } from "framer-motion";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { AnimationConfig } from "../AnimationConfig";
+import MuteButton from "../MuteButton/MuteButton";
 
 type Props = {
   onNavExpand: () => void;
@@ -54,6 +55,10 @@ const CountryClubNav = ({
         ref={containerRef}
       >
         <div className="relative mx-4 md:mx-12 h-16 border-l border-r flex flex-row items-center justify-center">
+          <div className="absolute left-0 px-4">
+            <MuteButton />
+          </div>
+
           <CountryClubLogo />
           <div className="absolute right-0 px-4">
             <motion.button

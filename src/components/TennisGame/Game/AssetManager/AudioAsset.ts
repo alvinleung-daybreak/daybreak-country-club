@@ -1,22 +1,35 @@
 import { Asset, AssetManager } from "./AssetManager";
 
 export class AudioController {
+  private static _isMuted = false;
+  public static isMuted() {
+    return this._isMuted;
+  }
+
+  public static hasInteractedWithDocument() {}
   public static mute() {
+    this._isMuted = true;
+
     // go through all audio asset and mute all
     const assets = AssetManager.getInstance();
     const allAudio = assets.findAll<AudioAsset>((id, asset) => {
       return asset instanceof AudioAsset;
     });
+
     Object.entries(allAudio).map(([id, audio]) => {
       audio.mute();
     });
   }
 
   public static unmute() {
+    this._isMuted = true;
+
     const assets = AssetManager.getInstance();
     const allAudio = assets.findAll<AudioAsset>((id, asset) => {
+      // console.log(asset instanceof AudioAsset);
       return asset instanceof AudioAsset;
     });
+    console.log(allAudio);
     Object.entries(allAudio).map(([id, audio]) => {
       audio.unmute();
     });
@@ -41,6 +54,7 @@ export class AudioAsset implements Asset {
   public mute() {
     this.isMuted = true;
     this.audio.volume = 0;
+    this.stop();
   }
 
   public unmute() {
@@ -56,11 +70,17 @@ export class AudioAsset implements Asset {
   }
 
   public play() {
+    if (this.isMuted) return;
+
     this.audio.currentTime = 0;
     this.audio.play();
   }
 
   public trigger() {
+    console.log(this.isMuted);
+
+    if (this.isMuted) return;
+
     const newAudio = this.audio.cloneNode() as HTMLAudioElement;
     newAudio.currentTime = 0;
     newAudio.play();
