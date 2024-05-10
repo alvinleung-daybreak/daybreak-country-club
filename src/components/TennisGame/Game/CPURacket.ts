@@ -15,7 +15,7 @@ export class CPURacket extends Racket {
     this.setColor("#FF9F00");
     this.setPosition(initialPosition);
 
-    this.responseTimeFactorX = random(0.08, 0.3);
+    this.responseTimeFactorX = random(0.07, 0.3);
   }
 
   public update(
