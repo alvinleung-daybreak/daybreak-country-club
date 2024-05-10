@@ -4,13 +4,19 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { CountryClubLogo } from "./CountryClubLogo";
 import { motion } from "framer-motion";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { AnimationConfig } from "../AnimationConfig";
 
 type Props = {
   onNavExpand: () => void;
   onNavCollapse: () => void;
+  shouldShowNav: boolean;
 };
 
-const CountryClubNav = ({ onNavExpand, onNavCollapse }: Props) => {
+const CountryClubNav = ({
+  shouldShowNav,
+  onNavExpand,
+  onNavCollapse,
+}: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
@@ -33,8 +39,18 @@ const CountryClubNav = ({ onNavExpand, onNavCollapse }: Props) => {
   return (
     <>
       <div className="h-16 border-l border-r mx-12"></div>
-      <nav
+      <motion.nav
         className="fixed top-0 left-0 right-0 z-50 bg-forest-green"
+        initial={{
+          y: 0,
+        }}
+        animate={{
+          y: shouldShowNav ? 0 : -64,
+          transition: {
+            duration: AnimationConfig.NORMAL,
+            ease: AnimationConfig.EASING,
+          },
+        }}
         ref={containerRef}
       >
         <div className="relative mx-4 md:mx-12 h-16 border-l border-r flex flex-row items-center justify-center">
@@ -79,7 +95,7 @@ const CountryClubNav = ({ onNavExpand, onNavCollapse }: Props) => {
             </a>
           </div>
         </motion.div>
-      </nav>
+      </motion.nav>
     </>
   );
 };

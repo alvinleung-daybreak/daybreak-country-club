@@ -33,6 +33,7 @@ const productImages = [
 
 export default function Home() {
   const [isNavExpanded, setIsNavExpanded] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(false);
 
   return (
     <>
@@ -48,6 +49,7 @@ export default function Home() {
         <CountryClubNav
           onNavExpand={() => setIsNavExpanded(true)}
           onNavCollapse={() => setIsNavExpanded(false)}
+          shouldShowNav={isNavVisible}
         />
 
         <motion.main
@@ -69,8 +71,11 @@ export default function Home() {
             <Divider />
             <BackdropScection />
             <Divider />
-            <section className="flex flex-row justify-center my-24">
-              <TennisGameComponent />
+            <section className="flex flex-row justify-center py-24 overflow-hidden">
+              <TennisGameComponent
+                onEnterGame={() => setIsNavVisible(false)}
+                onExitGame={() => setIsNavVisible(true)}
+              />
             </section>
           </div>
         </motion.main>
