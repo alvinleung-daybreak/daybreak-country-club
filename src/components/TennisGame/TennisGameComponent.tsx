@@ -188,11 +188,10 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
       >
         <motion.div
           initial={{
-            y: 200,
+            y: 0,
           }}
           animate={{
-            y: isInView ? 0 : 100,
-            // rotate: isInView ? 0 : -5,
+            y: isInView ? 0 : 0,
             transition: {
               duration: AnimationConfig.VERY_SLOW,
               ease: AnimationConfig.EASING,
@@ -203,7 +202,18 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
         >
           <motion.canvas
             animate={{
-              opacity: !isGameStarted && winner === undefined ? 0.3 : 1,
+              opacity: !isInView
+                ? 0.05
+                : !isGameStarted && winner === undefined
+                ? 0.3
+                : 1,
+              y: isInView ? 0 : 100,
+              scale: isInView ? 1 : 1.1,
+              rotateX: isInView ? 0 : 50,
+              transition: {
+                duration: 2,
+                ease: AnimationConfig.EASING,
+              },
             }}
             ref={canvasRef}
             width={1000}
@@ -228,7 +238,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
           <div>
             <motion.div
               animate={{
-                opacity: winner === "cpu" ? 1 : 0,
+                opacity: isInView && winner === "cpu" ? 1 : 0,
               }}
               className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
             >
@@ -236,7 +246,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             </motion.div>
             <motion.div
               animate={{
-                opacity: winner === "cpu" ? 1 : 0,
+                opacity: isInView && winner === "cpu" ? 1 : 0,
               }}
               className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
             >
@@ -247,7 +257,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
           <div>
             <motion.div
               animate={{
-                opacity: winner === "player" ? 1 : 0,
+                opacity: isInView && winner === "player" ? 1 : 0,
               }}
               className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
             >
@@ -255,14 +265,19 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
             </motion.div>
             <motion.div
               animate={{
-                opacity: winner === "player" ? 1 : 0,
+                opacity: isInView && winner === "player" ? 1 : 0,
               }}
               className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
             >
               Won
             </motion.div>
           </div>
-          <div className="absolute inset-4 bg-transparent border border-chalk-white pointer-events-none rounded-[22px]"></div>
+          <motion.div
+            animate={{
+              opacity: isInView ? 1 : 0.1,
+            }}
+            className="absolute inset-4 bg-transparent border border-chalk-white pointer-events-none rounded-[22px]"
+          ></motion.div>
         </motion.div>
 
         <div className="absolute -top-24 left-0 right-0 flex flex-row">
@@ -276,8 +291,9 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
               opacity: isInView ? 1 : 0,
               rotate: isInView ? 0 : 10,
               transition: {
-                duration: AnimationConfig.VERY_SLOW,
+                duration: AnimationConfig.SLOW,
                 ease: AnimationConfig.EASING,
+                delay: 0.3,
               },
             }}
             className="w-[20vw] min-w-48 max-w-72 flex mx-auto"
