@@ -4,7 +4,7 @@ import { AudioController } from "../TennisGame/Game/AssetManager/AudioAsset";
 type Props = {};
 
 const MuteButton = (props: Props) => {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     if (!isMuted) {
