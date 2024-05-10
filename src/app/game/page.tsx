@@ -6,7 +6,7 @@ type Props = {};
 const GamePage = (props: Props) => {
   return (
     <div>
-      <TennisGameComponent />
+      <TennisGameComponent onEnterGame={() => {}} onExitGame={() => {}} />
     </div>
   );
 };
