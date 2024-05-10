@@ -7,13 +7,15 @@ import { constrain, map, random } from "./utils";
 
 export class CPURacket extends Racket {
   private targetPosition = new Vector2D();
-  private maxMovementSpeed = 0;
-  private responseTimeFactor = 1;
+  private responseTimeFactorX = 0.08;
+  private responseTimeFactorY = 0.03;
 
   constructor(initialPosition: Vector2D) {
     super();
     this.setColor("#FF9F00");
     this.setPosition(initialPosition);
+
+    this.responseTimeFactorX = random(0.08, 0.3);
   }
 
   public update(
@@ -44,17 +46,23 @@ export class CPURacket extends Racket {
       idealPositionY = top - constrain(distToBall, 0, maxOffsetDist);
     }
 
-    const followResponsivenessX = 0.08;
-    const followResponsivenessY = 0.03;
+    // const followResponsivenessX = 0.08;
+    // const followResponsivenessY = 0.03;
+    const followResponsivenessX = this.responseTimeFactorX;
+    const followResponsivenessY = this.responseTimeFactorY;
 
     const willOut = tennisBall.predictOut(tennisCourt);
 
-    if (willOut) {
+    if (
+      willOut &&
+      !tennisBall.getHasBounced() &&
+      tennisBall.getTurn() === this
+    ) {
       // go against the ball when the ball is going out
       this.followTargetPosition(
         new Vector2D(tennisBallPos.x - 100, idealPositionY),
-        0.01,
-        0.01
+        0.06,
+        0.06
       );
       return;
     }

@@ -64,6 +64,10 @@ export class TennisBall {
     this.strikeSoundEffeect = assets.get<AudioAsset>("tennis-strike");
   }
 
+  public getTurn() {
+    return this.currentTurn;
+  }
+
   public getElevation() {
     return this.elevation;
   }
@@ -117,7 +121,7 @@ export class TennisBall {
     }
 
     const posYWhenGround = this.position.y + this.velocity.y * framesToGround;
-    if ((posYWhenGround < top || posYWhenGround > bottom) && !this.hasBounced) {
+    if (posYWhenGround < top || posYWhenGround > bottom) {
       return true;
     }
 
