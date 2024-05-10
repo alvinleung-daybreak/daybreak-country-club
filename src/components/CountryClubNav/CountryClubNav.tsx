@@ -55,7 +55,7 @@ const CountryClubNav = ({
         ref={containerRef}
       >
         <div className="relative mx-4 md:mx-12 h-16 border-l border-r flex flex-row items-center justify-center">
-          <div className="absolute left-0 px-4">
+          <div className="absolute h-16 flex left-0 px-4">
             <MuteButton />
           </div>
 
