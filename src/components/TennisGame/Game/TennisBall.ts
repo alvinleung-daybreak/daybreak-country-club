@@ -320,7 +320,7 @@ export class TennisBall {
       -this.velocity.y * 0.6 + swingOutput * playerSwingDirection.y;
 
     let isSmash = false;
-    let strikeAngle = map(this.elevation, 0, 300, 2, -3);
+    let strikeAngle = map(this.elevation, 0, 300, 2, -2);
 
     if (Math.abs(newVelY) > this.smashThreshold) {
       isSmash = true;

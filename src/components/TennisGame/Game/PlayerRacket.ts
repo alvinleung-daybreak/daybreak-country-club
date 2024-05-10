@@ -39,6 +39,7 @@ export class PlayerRacket extends Racket {
 
     // console.log(avgVelocity);
 
+    const tennisCourtDim = tennisCourt.getDimension();
     const netElevationOffset =
       tennisBall.getElevation() - tennisCourt.getNetElevation();
 
@@ -55,7 +56,7 @@ export class PlayerRacket extends Racket {
     const MAX_SWING_INPUT = -0.1;
     const MIN_SWING_INPUT = -0.03;
 
-    const MAX_ANGLE_OUTPUT = -1;
+    const MAX_ANGLE_OUTPUT = -2;
     const MIN_ANGLE_OUTPUT = 0;
 
     const vertcalAccel = map(
@@ -69,8 +70,6 @@ export class PlayerRacket extends Racket {
     this.setSwingVelocity(Vector2D.multiply(avgVelocity, 1.5));
 
     const courtEdges = tennisCourt.getEdges();
-
-    const tennisCourtDim = tennisCourt.getDimension();
     const swingRange = tennisCourtDim.height / 2;
 
     const xOffset = map(
