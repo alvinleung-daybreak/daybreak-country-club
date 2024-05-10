@@ -70,8 +70,7 @@ export default function Home() {
             <BTSSection />
             <Divider />
             <BackdropScection />
-            <Divider />
-            <section className="flex flex-row justify-center py-24 overflow-hidden">
+            <section className="relative w-full flex flex-row justify-center py-24 overflow-hidden">
               <TennisGameComponent
                 onEnterGame={() => setIsNavVisible(false)}
                 onExitGame={() => setIsNavVisible(true)}

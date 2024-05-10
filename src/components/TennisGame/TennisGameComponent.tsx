@@ -14,6 +14,10 @@ import { AudioAsset } from "./Game/AssetManager/AudioAsset";
 import TennisGameBadge from "./TennisGameBadge";
 import { motion, useInView } from "framer-motion";
 import { AnimationConfig } from "../AnimationConfig";
+import useStateRef from "@/hooks/useStateRef";
+
+import Confetti from "react-confetti-boom";
+import { useDebounceCallback } from "usehooks-ts";
 
 type Props = {
   onEnterGame: () => void;
@@ -35,16 +39,25 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
   const canvasRef = useRef() as MutableRefObject<HTMLCanvasElement>;
 
   const [isGameLoading, setIsGameLoading] = useState(true);
-  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [isGameStarted, setIsGameStarted, isGameStartedRef] =
+    useStateRef(false);
   const [winner, setWinner] = useState<string | undefined>(undefined);
   const [reason, setWinningReason] = useState<string>("");
+
+  const [isExploding, setIsExploding] = React.useState(false);
 
   const defaultText = "Challenge the daybreak team";
   const [gameMessageText, setGameMessageText] = useState<string>(defaultText);
 
   const gameRef = useRef<TennisGame>();
 
+  // const stopExplodingDebounced = useDebounceCallback(() => {
+  //   setIsExploding(false);
+  // }, 3000);
+
   const handleWin = (winner: string, reason: string) => {
+    if (!isGameStartedRef.current) return;
+
     setWinner(winner);
     setWinningReason(reason);
     setIsGameStarted(false);
@@ -66,6 +79,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
       const randWinningText =
         winningTexts[Math.round(Math.random() * (winningTexts.length - 1))];
       setGameMessageText(randWinningText);
+      setIsExploding(true);
     }
 
     if (winner === "cpu") {
@@ -78,6 +92,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
   const handleGameClick = () => {
     setIsGameStarted(true);
     setWinner(undefined);
+    setIsExploding(false);
 
     if (gameRef.current) {
       gameRef.current.destory();
@@ -128,7 +143,7 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
       setIsGameLoading(false);
 
       // init a game first
-      gameRef.current = new TennisGame(canvasRef.current, handleWin);
+      gameRef.current = new TennisGame(canvasRef.current, () => {});
     };
     initGame();
 
@@ -150,106 +165,125 @@ const TennisGameComponent = ({ onEnterGame, onExitGame }: Props) => {
   }, [isInView]);
 
   return (
-    <div
-      className="relative w-full max-w-[130vh] mx-4 md:mx-12"
-      ref={containerRef}
-    >
-      <motion.div
-        initial={{
-          y: 200,
-        }}
-        animate={{
-          y: isInView ? 0 : 200,
-          rotate: isInView ? 0 : -5,
-          transition: {
-            duration: AnimationConfig.VERY_SLOW,
-            ease: AnimationConfig.EASING,
-          },
-        }}
-        onClick={handleGameClick}
-        className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
+    <>
+      <div className="absolute left-0 top-0 right-0 flex items-center justify-center z-50">
+        {isExploding && (
+          <Confetti
+            mode="boom"
+            x={0.5}
+            y={0.1}
+            particleCount={50}
+            deg={270}
+            shapeSize={8}
+            spreadDeg={45}
+            effectInterval={1000}
+            effectCount={10}
+            colors={["#ff577f", "#ff884b", "#ffd384", "#fff9b0", "#3498db"]}
+          />
+        )}
+      </div>
+      <div
+        className="relative w-full max-w-[130vh] mx-4 md:mx-12"
+        ref={containerRef}
       >
-        <motion.canvas
-          ref={canvasRef}
-          width={1000}
-          height={600}
-          className="w-full h-fit"
-        />
-
-        <motion.div
-          animate={{
-            opacity: !isGameStarted ? 1 : 0,
-            transition: {
-              delay: isGameStarted ? 0 : 0.6,
-            },
-          }}
-          className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-50 text-chalk-white text-center"
-        >
-          <div className="font-country-sans-md">{gameMessageText}</div>
-          <div className="font-sans-xs opacity-50">
-            Click anywhere to start game
-          </div>
-        </motion.div>
-        <div>
-          <motion.div
-            animate={{
-              opacity: winner === "cpu" ? 1 : 0,
-            }}
-            className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
-          >
-            Try
-          </motion.div>
-          <motion.div
-            animate={{
-              opacity: winner === "cpu" ? 1 : 0,
-            }}
-            className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
-          >
-            Again
-          </motion.div>
-        </div>
-
-        <div>
-          <motion.div
-            animate={{
-              opacity: winner === "player" ? 1 : 0,
-            }}
-            className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
-          >
-            You
-          </motion.div>
-          <motion.div
-            animate={{
-              opacity: winner === "player" ? 1 : 0,
-            }}
-            className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
-          >
-            Won
-          </motion.div>
-        </div>
-        <div className="absolute inset-4 bg-transparent border border-chalk-white pointer-events-none rounded-[22px]"></div>
-      </motion.div>
-      <div className="absolute -top-24 left-0 right-0 flex flex-row">
         <motion.div
           initial={{
-            y: 50,
-            opacity: 0,
+            y: 200,
           }}
           animate={{
-            y: isInView ? 0 : 50,
-            opacity: isInView ? 1 : 0,
-            rotate: isInView ? 0 : 30,
+            y: isInView ? 0 : 200,
+            // rotate: isInView ? 0 : -5,
             transition: {
               duration: AnimationConfig.VERY_SLOW,
               ease: AnimationConfig.EASING,
             },
           }}
-          className="w-[20vw] min-w-48 max-w-72 flex mx-auto"
+          onClick={handleGameClick}
+          className="relative flex flex-grow items-center bg-forest-green overflow-hidden rounded-[32px] cursor-none"
         >
-          <TennisGameBadge />
+          <motion.canvas
+            ref={canvasRef}
+            width={1000}
+            height={600}
+            className="w-full h-fit"
+          />
+
+          <motion.div
+            animate={{
+              opacity: !isGameStarted ? 1 : 0,
+              transition: {
+                delay: isGameStarted ? 0 : 0.6,
+              },
+            }}
+            className="absolute bottom-10 left-0 right-0 flex flex-col items-center z-50 text-chalk-white text-center"
+          >
+            <div className="font-country-sans-md">{gameMessageText}</div>
+            <div className="font-sans-xs opacity-50">
+              Click anywhere to start game
+            </div>
+          </motion.div>
+          <div>
+            <motion.div
+              animate={{
+                opacity: winner === "cpu" ? 1 : 0,
+              }}
+              className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
+            >
+              Try
+            </motion.div>
+            <motion.div
+              animate={{
+                opacity: winner === "cpu" ? 1 : 0,
+              }}
+              className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
+            >
+              Again
+            </motion.div>
+          </div>
+
+          <div>
+            <motion.div
+              animate={{
+                opacity: winner === "player" ? 1 : 0,
+              }}
+              className="absolute left-[10%] lg:left-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
+            >
+              You
+            </motion.div>
+            <motion.div
+              animate={{
+                opacity: winner === "player" ? 1 : 0,
+              }}
+              className="absolute right-[10%] lg:right-[22%] top-[40%] flex items-center text-chalk-white font-country-script-display"
+            >
+              Won
+            </motion.div>
+          </div>
+          <div className="absolute inset-4 bg-transparent border border-chalk-white pointer-events-none rounded-[22px]"></div>
         </motion.div>
+
+        <div className="absolute -top-24 left-0 right-0 flex flex-row">
+          <motion.div
+            initial={{
+              y: 50,
+              opacity: 0,
+            }}
+            animate={{
+              y: isInView ? 0 : 50,
+              opacity: isInView ? 1 : 0,
+              // rotate: isInView ? 0 : 30,
+              transition: {
+                duration: AnimationConfig.VERY_SLOW,
+                ease: AnimationConfig.EASING,
+              },
+            }}
+            className="w-[20vw] min-w-48 max-w-72 flex mx-auto"
+          >
+            <TennisGameBadge />
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

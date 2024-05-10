@@ -1,6 +1,6 @@
 "use client";
 
-import TennisGameComponent from "@/components/TennisGame/TennisGameComponent";
+import TennisGameComponent from "@/components/TennisGame/TennisGameComponent.1";
 import React from "react";
 
 type Props = {};
